@@ -3,52 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আজকের লাইভ বাজার মূল্য</title>
+    <title>আজকের লাইভ বাজার মূল্য - ১০০ আইটেম সুপারশপ</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0,1); }
-        .product-card { border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 8px; position: relative; background: #fafafa; }
-        .badge { position: absolute; top: 10px; right: 10px; background: red; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; }
-        .btn { background: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 10px; margin: 0; }
+        .header { background: #4CAF50; color: white; padding: 15px; margin-bottom: 20px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .container { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        @media (max-width: 400px) { .container { grid-template-columns: 1fr; } }
+        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; position: relative; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .badge { position: absolute; top: 8px; right: 8px; background: red; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+        .price { color: #e44d26; font-size: 16px; font-weight: bold; margin: 8px 0; }
+        .unit { color: #777; font-size: 13px; }
+        .btn { background: #4CAF50; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 5px; width: 80%; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>আজকের লাইভ বাজার মূল্য</h2>
-        <div class="product-card">
-            <span class="badge" id="fish-discount">০% ছাড়</span>
-            <h3>ইলিশ মাছ (বড়)</h3>
-            <p>১ কেজি</p>
-            <h4 id="fish-price">মূল্য: ৳ ০</h4>
-            <a href="#" class="btn">কিনুন</a>
-        </div>
-        <div class="product-card">
-            <span class="badge" id="meat-discount">০% ছাড়</span>
-            <h3>গরুর মাংস (প্রিমিয়াম)</h3>
-            <p>১ কেজি</p>
-            <h4 id="meat-price">মূল্য: ৳ ০</h4>
-            <a href="#" class="btn">কিনুন</a>
-        </div>
-        <!-- নতুন ৩ নম্বর আইটেম এখানে যুক্ত হলো -->
-        <div class="product-card">
-            <span class="badge" id="chicken-discount">০% ছাড়</span>
-            <h3>ব্রয়লার মুরগি (তাজা)</h3>
-            <p>১ কেজি</p>
-            <h4 id="chicken-price">মূল্য: ৳ ০</h4>
-            <a href="#" class="btn">কিনুন</a>
-        </div>
+    <div class="header">
+        <h2 style="margin:0;">খাঁন বাজার লাইভ সুপারশপ</h2>
+        <p style="margin:5px 0 0 0; font-size:14px;">নিত্যপ্রয়োজনীয় ১০০টি আইটেমের লাইভ দরদাম</p>
     </div>
+    
+    <div class="container" id="product-container"></div>
+
     <script>
-        function loadPrices() {
-            document.getElementById('fish-price').innerText = "মূল্য: ৳ " + (localStorage.getItem('fish_price') || '১২০০');
-            document.getElementById('fish-discount').innerText = (localStorage.getItem('fish_discount') || '০') + "% ছাড়";
-            document.getElementById('meat-price').innerText = "মূল্য: ৳ " + (localStorage.getItem('meat_price') || '৭封০');
-            document.getElementById('meat-discount').innerText = (localStorage.getItem('meat_discount') || '০') + "% ছাড়";
-            // মুরগির লাইভ ডেটা লোড
-            document.getElementById('chicken-price').innerText = "মূল্য: ৳ " + (localStorage.getItem('chicken_price') || '১৮০');
-            document.getElementById('chicken-discount').innerText = (localStorage.getItem('chicken_discount') || '০') + "% ছাড়";
+        const products = [
+            { id: "p1", name: "মিনিকেট চাল (প্রিমিয়াম)", unit: "১ কেজি", defaultPrice: 72 },
+            { id: "p2", name: "নাজিরশাইল চাল", unit: "১ কেজি", defaultPrice: 85 },
+            { id: "p3", name: "পোলাও চাল (চিনিকুড়া)", unit: "১ কেজি", defaultPrice: 150 },
+            { id: "p4", name: "মসুর ডাল (দেশী)", unit: "১ কেজি", defaultPrice: 140 },
+            { id: "p5", name: "মসুর ডাল (মোটা)", unit: "১ কেজি", defaultPrice: 110 },
+            { id: "p6", name: "মুগ ডাল (ভাজা)", unit: "১ কেজি", defaultPrice: 165 },
+            { id: "p7", name: "ছোলা ডাল", unit: "১ কেজি", defaultPrice: 120 },
+            { id: "p8", name: "বুট ডাল", unit: "১ কেজি", defaultPrice: 105 },
+            { id: "p9", name: "খেসারী ডাল", unit: "১ কেজি", defaultPrice: 95 },
+            { id: "p10", name: "মাষকলাই ডাল", unit: "১ কেজি", defaultPrice: 160 },
+            { id: "p11", name: "সয়াবিন তেল (তীর/রুপচাঁদা)", unit: "১ লিটার", defaultPrice: 168 },
+            { id: "p12", name: "সয়াবিন তেল (৫ লিটার)", unit: "১ বোতল", defaultPrice: 810 },
+            { id: "p13", name: "সরিষার তেল (ঘানি ভাঙা)", unit: "১ লিটার", defaultPrice: 240 },
+            { id: "p14", name: "খাটি গাওয়া ঘি", unit: "১ কেজি", defaultPrice: 1400 },
+            { id: "p15", name: "অলিভ অয়েল", unit: "২৫০ মিলি", defaultPrice: 380 },
+            { id: "p16", name: "পাম অয়েল", unit: "১ লিটার", defaultPrice: 135 },
+            { id: "p17", name: "নারকেল তেল", unit: "২০০ মিলি", defaultPrice: 145 },
+            { id: "p18", name: "রাইস ব্র্যান অয়েল", unit: "১ লিটার", defaultPrice: 190 },
+            { id: "p19", name: "ডালডা", unit: "১ কেজি", defaultPrice: 180 },
+            { id: "p20", name: "সূর্যমুখী তেল", unit: "১ লিটার", defaultPrice: 280 },
+            { id: "p21", name: "ইলিশ মাছ (বড়)", unit: "১ কেজি", defaultPrice: 1200 },
+            { id: "p22", name: "ইলিশ মাছ (মাঝারি)", unit: "১ কেজি", defaultPrice: 850 },
+            { id: "p23", name: "গরুর মাংস (প্রিমিয়াম)", unit: "১ কেজি", defaultPrice: 750 },
+            { id: "p24", name: "খাসির মাংস", unit: "১ কেজি", defaultPrice: 1100 },
+            { id: "p25", name: "ব্রয়লার মুরগি (তাজা)", unit: "১ কেজি", defaultPrice: 180 },
+            { id: "p26", name: "সোনালী মুরগি", unit: "১ কেজি", defaultPrice: 320 },
+            { id: "p27", name: "দেশী মুরগি", unit: "১ কেজি", defaultPrice: 550 },
+            { id: "p28", name: "রুই মাছ", unit: "১ কেজি", defaultPrice: 340 },
+            { id: "p29", name: "কাতল মাছ", unit: "১ কেজি", defaultPrice: 380 },
+            { id: "p30", name: "চিংড়ি মাছ (মাঝারি)", unit: "১ কেজি", defaultPrice: 700 },
+            { id: "p31", name: "পাঙাস মাছ", unit: "১ কেজি", defaultPrice: 180 },
+            { id: "p32", name: "তেলাপিয়া মাছ", unit: "১ কেজি", defaultPrice: 220 },
+            { id: "p33", name: "পাবদা মাছ", unit: "১ কেজি", defaultPrice: 400 },
+            { id: "p34", name: "টেংরা মাছ", unit: "১ কেজি", defaultPrice: 500 },
+            { id: "p35", name: "মাগুর মাছ (দেশী)", unit: "১ কেজি", defaultPrice: 750 },
+            { id: "p36", name: "ফার্মের মুরগির ডিম", unit: "১ হালি", defaultPrice: 48 },
+            { id: "p37", name: "হাঁসের ডিম", unit: "১ হালি", defaultPrice: 65 },
+            { id: "p38", name: "দেশী মুরগির ডিম", unit: "১ হালি", defaultPrice: 75 },
+            { id: "p39", name: "তরল দুধ", unit: "১ লিটার", defaultPrice: 90 },
+            { id: "p40", name: "গুঁড়ো দুধ", unit: "১ কেজি", defaultPrice: 850 },
+            { id: "p41", name: "মিষ্টি দই", unit: "১ কেজি", defaultPrice: 260 },
+            { id: "p42", name: "টক দই", unit: "১ কেজি", defaultPrice: 220 },
+            { id: "p43", name: "মাখন (Butter)", unit: "২০০ গ্রাম", defaultPrice: 240 },
+            { id: "p44", name: "পনির (Cheese)", unit: "২৫০ গ্রাম", defaultPrice: 350 },
+            { id: "p45", name: "আইসক্রিম (ভ্যানিলা)", unit: "১ লিটার", defaultPrice: 220 },
+            { id: "p46", name: "আলু (ডায়মন্ড)", unit: "১ কেজি", defaultPrice: 40 },
+            { id: "p47", name: "দেশী পেঁয়াজ", unit: "১ কেজি", defaultPrice: 85 },
+            { id: "p48", name: "আমদানী পেঁয়াজ", unit: "১ কেজি", defaultPrice: 70 },
+            { id: "p49", name: "রসুন (দেশী)", unit: "১ কেজি", defaultPrice: 220 },
+            { id: "p50", name: "রসুন (চায়না)", unit: "১ কেজি", defaultPrice: 240 },
+            { id: "p51", name: "আদা", unit: "১ কেজি", defaultPrice: 260 },
+            { id: "p52", name: "কাঁচামরিচ", unit: "১ কেজি", defaultPrice: 160 },
+            { id: "p53", name: "টমেটো (পাকা)", unit: "১ কেজি", defaultPrice: 120 },
+            { id: "p54", name: "বেগুন", unit: "১ কেজি", defaultPrice: 60 },
+            { id: "p55", name: "ফুলকপি", unit: "১ টি", defaultPrice: 45 },
+            { id: "p56", name: "বাধাকপি", unit: "১ টি", defaultPrice: 40 },
+            { id: "p57", name: "পটল", unit: "১ কেজি", defaultPrice: 50 },
+            { id: "p58", name: "ঝিংগা", unit: "১ কেজি", defaultPrice: 60 },
+            { id: "p59", name: "করল্লা / উস্তা", unit: "১ কেজি", defaultPrice: 80 },
+            { id: "p60", name: "লাউ (মাঝারি)", unit: "১ টি", defaultPrice: 60 },
+            { id: "p61", name: "মিষ্টি কুমড়া", unit: "১ কেজি", defaultPrice: 40 },
+            { id: "p62", name: "শসা (দেশী)", unit: "১ কেজি", defaultPrice: 60 },
+            { id: "p63", name: "গাজর", unit: "১ কেজি", defaultPrice: 90 },
+            { id: "p64", name: "লেবু (কাগজি)", unit: "১ হালি", defaultPrice: 30 },
+            { id: "p65", name: "পেঁপে (কাঁচা)", unit: "১ কেজি", defaultPrice: 35 },
+            { id: "p66", name: "আয়োডিনযুক্ত লবন", unit: "১ কেজি", defaultPrice: 42 },
+            { id: "p67", name: "চিনি (সাদা)", unit: "১ কেজি", defaultPrice: 135 },
+            { id: "p68", name: "লাল চিনি (দেশী)", unit: "১ কেজি", defaultPrice: 150 },
+            { id: "p69", name: "হলুদ গুঁড়ো", unit: "২০০ গ্রাম", defaultPrice: 90 },
+            { id: "p70", name: "मরিচ গুঁড়ো", unit: "২০০ গ্রাম", defaultPrice: 120 },
+            { id: "p71", name: "ধনে গুঁড়ো", unit: "২০০ গ্রাম", defaultPrice: 70 },
+            { id: "p72", name: "জিরা (আস্ত)", unit: "১০০ গ্রাম", defaultPrice: 80 },
+            { id: "p73", name: "এलाচ", unit: "৫০ গ্রাম", defaultPrice: 190 },
+            { id: "p74", name: "দারুচিনি", unit: "১০০ গ্রাম", defaultPrice: 70 },
+            { id: "p75", name: "লবঙ্গ", unit: "৫০ গ্রাম", defaultPrice: 90 },
+            { id: "p76", name: "সাগর কলা", unit: "১ হালি", defaultPrice: 40 },
+            { id: "p77", name: "আপেল (গালা)", unit: "১ কেজি", defaultPrice: 280 },
+            { id: "p78", name: "মাল্টা", unit: "১ কেজি", defaultPrice: 240 },
+            { id: "p79", name: "কমলা", unit: "১ কেজি", defaultPrice: 260 },
+            { id: "p80", name: "আঙুর (সবুজ)", unit: "১ কেজি", defaultPrice: 320 },
+            { id: "p81", name: "বেদানা / আনার", unit: "১ কেজি", defaultPrice: 450 },
+            { id: "p82", name: "পেঁপে (পাকা)", unit: "১ কেজি", defaultPrice: 90 },
+            { id: "p83", name: "তরমুজ (মাঝারি)", unit: "১ টি", defaultPrice: 250 },
+            { id: "p84", name: "আনারস", unit: "১ টি", defaultPrice: 40 },
+            { id: "p85", name: "পেয়ারা (থাই)", unit: "১ কেজি", defaultPrice: 80 },
+            { id: "p86", name: "ইস্পাহানি চা", unit: "৪০০ গ্রাম", defaultPrice: 230 },
+            { id: "p87", name: "নেসক্যাফে কফি", unit: "৫০ গ্রাম", defaultPrice: 320 },
+            { id: "p88", name: "লেক্সাস বিস্কুট", unit: "১ প্যাকেট", defaultPrice: 65 },
+            { id: "p89", name: "এনার্জি বিস্কুট", unit: "১ প্যাকেট", defaultPrice: 45 },
+            { id: "p90", name: "চানাচুর", unit: "৩০০ গ্রাম", defaultPrice: 75 },
+            { id: "p91", name: "ম্যাগি নুডুলস", unit: "১ বক্স", defaultPrice: 160 },
+            { id: "p92", name: "টমেটো সস", unit: "৫০০ গ্রাম", defaultPrice: 110 },
+            { id: "p93", name: "সুজি", unit: "৫০০ গ্রাম", defaultPrice: 45 },
+            { id: "p94", name: "আটা (তীর)", unit: "২ কেজি", defaultPrice: 115 },
+            { id: "p95", name: "ময়দা (প্যাকেট)", unit: "২ কেজি", defaultPrice: 135 },
+            { id: "p96", name: "লাইফবয় সাবান", unit: "১ টি", defaultPrice: 55 },
+            { id: "p97", name: "ডিটারজেন্ট পাউডার", unit: "১ কেজি", defaultPrice: 110 },
+            { id: "p98", name: "ভিম লিকুইড", unit: "২৫০ মিলি", defaultPrice: 70 },
+
+
+cat << 'EOF' > admin.html
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাস্টার দাম পরিবর্তন প্যানেল - ১০০ আইটেম</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #eee; padding: 10px; margin: 0; }
+        .box { max-width: 500px; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .product-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .product-name { width: 45%; font-size: 13px; text-align: left; font-weight: bold; color: #444; }
+        input { width: 22%; padding: 6px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center; }
+        button { background: #008CBA; color: white; padding: 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; position: fixed; bottom: 0; left: 0; border-radius: 0; z-index: 1000; }
+        .scroll-area { height: 75vh; overflow-y: scroll; padding-bottom: 60px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3 style="margin-top:0; color:#008CBA; text-align:center;">১০০ আইটেম মূল্য নিয়ন্ত্রণ বোর্ড</h3>
+        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; color:#777; padding-bottom:5px; border-bottom:2px solid #ccc;">
+            <span style="width:45%; text-align:left;">আইটেমের নাম</span>
+            <span style="width:22%;">নতুন দাম</span>
+            <span style="width:22%;">ছাড় (%)</span>
+        </div>
+        
+        <div class="scroll-area" id="admin-container"></div>
+    </div>
+    
+    <button onclick="saveAllPrices()">সব দাম একসাথে আপডেট করুন</button>
+
+    <script>
+        const products = [
+            { id: "p1", name: "মিনিকেট চাল" }, { id: "p2", name: "নাজিরশাইল চাল" }, { id: "p3", name: "পোলাও চাল" },
+            { id: "p4", name: "মসুর ডাল (দেশী)" }, { id: "p5", name: "মসুর ডাল (মোটা)" }, { id: "p6", name: "মুগ ডাল" },
+            { id: "p7", name: "ছোলা ডাল" }, { id: "p8", name: "বুট ডাল" }, { id: "p9", name: "খেসারী ডাল" }, { id: "p10", name: "মাষকলাই ডাল" },
+            { id: "p11", name: "সয়াবিন তেল (১লি.)" }, { id: "p12", name: "সয়াবিন তেল (৫লি.)" }, { id: "p13", name: "সরিষার তেল" },
+            { id: "p14", name: "খাটি গাওয়া ঘি" }, { id: "p15", name: "অলিভ অয়েল" }, { id: "p16", name: "পাম অয়েল" },
+            { id: "p17", name: "নারকেল তেল" }, { id: "p18", name: "রাইস ব্র্যান অয়েল" }, { id: "p19", name: "ডালডা" }, { id: "p20", name: "সূর্যমুখী তেল" },
+            { id: "p21", name: "ইলিশ মাছ (বড়)" }, { id: "p22", name: "ইলিশ মাছ (মাঝারি)" }, { id: "p23", name: "গরুর মাংস" },
+            { id: "p24", name: "খাসির মাংস" }, { id: "p25", name: "ব্রয়লার মুরগি" }, { id: "p26", name: "সোনালী মুরগি" },
+            { id: "p27", name: "দেশী মুরগি" }, { id: "p28", name: "রুই মাছ" }, { id: "p29", name: "কাতল মাছ" },
+            { id: "p30", name: "চিংড়ি মাছ" }, { id: "p31", name: "পাঙাস মাছ" }, { id: "p32", name: "তেলাপিয়া মাছ" },
+            { id: "p33", name: "পাবদা মাছ" }, { id: "p34", name: "টেংরা মাছ" }, { id: "p35", name: "মাগুর মাছ" },
+            { id: "p36", name: "ফার্মের ডিম" }, { id: "p37", name: "হাঁসের ডিম" }, { id: "p38", name: "দেশী মুরগির ডিম" },
+            { id: "p39", name: "তরল দুধ" }, { id: "p40", name: "गुঁড়ো দুধ" }, { id: "p41", name: "মিষ্টি দই" },
+            { id: "p42", name: "টক দই" }, { id: "p43", name: "মাখন (Butter)" }, { id: "p44", name: "পনির (Cheese)" }, { id: "p45", name: "আইসক্রিম" },
+            { id: "p46", name: "আলু" }, { id: "p47", name: "দেশী পেঁয়াজ" }, { id: "p48", name: "আমদানী পেঁয়াজ" },
+            { id: "p49", name: "রসুন (দেশী)" }, { id: "p50", name: "রসুন (চায়না)" }, { id: "p51", name: "আদা" },
+            { id: "p52", name: "কাঁচামরিচ" }, { id: "p53", name: "টমেটো" }, { id: "p54", name: "বেগুন" },
+            { id: "p55", name: "ফুলকপি" }, { id: "p56", name: "বাধাকপি" }, { id: "p57", name: "পটল" },
+            { id: "p58", name: "ঝিংগা" }, { id: "p59", name: "করল্লা" }, { id: "p60", name: "লাউ" },
+            { id: "p61", name: "মিষ্টি কুমড়া" }, { id: "p62", name: "শসা" }, { id: "p63", name: "গাজর" },
+            { id: "p64", name: "লেবু" }, { id: "p65", name: "পেঁপে (কাঁচা)" }, { id: "p66", name: "লবন" },
+            { id: "p67", name: "চিনি (সাদা)" }, { id: "p68", name: "লাল চিনি" }, { id: "p69", name: "হলুদ গুঁড়ো" },
+            { id: "p70", name: "मরিচ গুঁড়ো" }, { id: "p71", name: "ধনে গুঁড়ো" }, { id: "p72", name: "জিরা" },
+            { id: "p73", name: "এলাচ" }, { id: "p74", name: "دارুচিনি" }, { id: "p75", name: "লবঙ্গ" },
+            { id: "p76", name: "সাগর কলা" }, { id: "p77", name: "আপেল" }, { id: "p78", name: "মাল্টা" },
+            { id: "p79", name: "কমলা" }, { id: "p80", name: "আঙুর" }, { id: "p81", name: "বেদানা" },
+            { id: "p82", name: "পেঁপে (পাকা)" }, { id: "p83", name: "তরমুজ" }, { id: "p84", name: "আনারস" }, { id: "p85", name: "পেয়ারা" },
+            { id: "p86", name: "চা পাতা" }, { id: "p87", name: "কফি" }, { id: "p88", name: "লেক্সাস বিস্কুট" },
+            { id: "p89", name: "এনার্জি বিস্কুট" }, { id: "p90", name: "চানাচুর" }, { id: "p91", name: "ম্যাগি নুডুলস" },
+            { id: "p92", name: "টমেটো সস" }, { id: "p93", name: "সুজি" }, { id: "p94", name: "আটা" },
+            { id: "p95", name: "ময়দা" }, { id: "p96", name: "সাবান" }, { id: "p97", name: "ডিটারজেন্ট পাউডার" },
+            { id: "p98", name: "ভিম লিকুইড" }, { id: "p99", name: "টুথপেস্ট" }, { id: "p100", name: "হারপিক" }
+        ];
+
+        function loadAdminPanel() {
+            const container = document.getElementById('admin-container');
+            container.innerHTML = '';
+            products.forEach(p => {
+                const row = document.createElement('div');
+                row.className = 'product-row';
+                const currentPrice = localStorage.getItem(p.id + '_price') || '';
+                const currentDiscount = localStorage.getItem(p.id + '_discount') || '';
+                row.innerHTML = `
+                    <div class="product-name">${p.name}</div>
+                    <input type="number" id="${p.id}_p" placeholder="দাম" value="${currentPrice}">
+                    <input type="number" id="${p.id}_d" placeholder="%" value="${currentDiscount}">
+                `;
+                container.appendChild(row);
+            });
         }
-        window.onload = loadPrices;
+
+        function saveAllPrices() {
+            products.forEach(p => {
+                const priceVal = document.getElementById(p.id + '_p').value;
+                const discountVal = document.getElementById(p.id + '_d').value;
+                if(priceVal) localStorage.setItem(p.id + '_price', priceVal);
+                if(discountVal) localStorage.setItem(p.id + '_discount', discountVal);
+            });
+            alert('১০০টি আইটেমের বাজার দর সফলভাবে আপডেট করা হয়েছে!');
+            window.location.href = 'index.html';
+        }
+        window.onload = loadAdminPanel;
     </script>
 </body>
 </html>
