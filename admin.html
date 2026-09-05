@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>দাম পরিবর্তন প্যানেল</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #eee; padding: 20px; text-align: center; }
+        .box { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #008CBA; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 95%; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>বাজার মূল্য পরিবর্তন প্যানেল</h2>
+        
+        <h3>ইলিশ মাছ</h3>
+        <input type="number" id="fishPrice" placeholder="নতুন দাম লেখো">
+        <input type="number" id="fishDiscount" placeholder="ছাড়ের পরিমাণ (%)">
+        
+        <h3>গরুর মাংস</h3>
+        <input type="number" id="meatPrice" placeholder="নতুন দাম লেখো">
+        <input type="number" id="meatDiscount" placeholder="ছাড়ের পরিমাণ (%)">
+        
+        <br><br>
+        <button onclick="savePrices()">দাম আপডেট করুন</button>
+    </div>
+
+    <script>
+        function savePrices() {
+            if(document.getElementById('fishPrice').value) localStorage.setItem('fish_price', document.getElementById('fishPrice').value);
+            if(document.getElementById('fishDiscount').value) localStorage.setItem('fish_discount', document.getElementById('fishDiscount').value);
+            if(document.getElementById('meatPrice').value) localStorage.setItem('meat_price', document.getElementById('meatPrice').value);
+            if(document.getElementById('meatDiscount').value) localStorage.setItem('meat_discount', document.getElementById('meatDiscount').value);
+            alert('বাজার মূল্য সফলভাবে আপডেট হয়েছে!');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

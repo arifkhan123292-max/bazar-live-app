@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আজকের লাইভ বাজার মূল্য</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .product-card { border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 8px; position: relative; background: #fafafa; }
+        .badge { position: absolute; top: 10px; right: 10px; background: red; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; }
+        .btn { background: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>আজকের লাইভ বাজার মূল্য</h2>
+        <div class="product-card">
+            <span class="badge" id="fish-discount">০% ছাড়</span>
+            <h3>ইলিশ মাছ (বড়)</h3>
+            <p>১ কেজি</p>
+            <h4 id="fish-price">মূল্য: ৳ ০</h4>
+            <a href="#" class="btn">কিনুন</a>
+        </div>
+        <div class="product-card">
+            <span class="badge" id="meat-discount">০% ছাড়</span>
+            <h3>গরুর মাংস (প্রিমিয়াম)</h3>
+            <p>১ কেজি</p>
+            <h4 id="meat-price">মূল্য: ৳ ০</h4>
+            <a href="#" class="btn">কিনুন</a>
+        </div>
+    </div>
+    <script>
+        function loadPrices() {
+            document.getElementById('fish-price').innerText = "মূল্য: ৳ " + (localStorage.getItem('fish_price') || '১২০০');
+            document.getElementById('fish-discount').innerText = (localStorage.getItem('fish_discount') || '০') + "% ছাড়";
+            document.getElementById('meat-price').innerText = "মূল্য: ৳ " + (localStorage.getItem('meat_price') || '৭৫০');
+            document.getElementById('meat-discount').innerText = (localStorage.getItem('meat_discount') || '০') + "% ছাড়";
+        }
+        window.onload = loadPrices;
+    </script>
+</body>
+</html>
