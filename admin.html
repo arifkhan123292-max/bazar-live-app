@@ -22,6 +22,10 @@
         <h3>গরুর মাংস</h3>
         <input type="number" id="meatPrice" placeholder="নতুন দাম লেখো">
         <input type="number" id="meatDiscount" placeholder="ছাড়ের পরিমাণ (%)">
+
+        <h3>ব্রয়লার মুরগি</h3>
+        <input type="number" id="chickenPrice" placeholder="নতুন দাম লেখো">
+        <input type="number" id="chickenDiscount" placeholder="ছাড়ের পরিমাণ (%)">
         
         <br><br>
         <button onclick="savePrices()">দাম আপডেট করুন</button>
@@ -33,6 +37,10 @@
             if(document.getElementById('fishDiscount').value) localStorage.setItem('fish_discount', document.getElementById('fishDiscount').value);
             if(document.getElementById('meatPrice').value) localStorage.setItem('meat_price', document.getElementById('meatPrice').value);
             if(document.getElementById('meatDiscount').value) localStorage.setItem('meat_discount', document.getElementById('meatDiscount').value);
+            // মুরগির নতুন দাম সেভ করা
+            if(document.getElementById('chickenPrice').value) localStorage.setItem('chicken_price', document.getElementById('chickenPrice').value);
+            if(document.getElementById('chickenDiscount').value) localStorage.setItem('chicken_discount', document.getElementById('chickenDiscount').value);
+            
             alert('বাজার মূল্য সফলভাবে আপডেট হয়েছে!');
             window.location.href = 'index.html';
         }
