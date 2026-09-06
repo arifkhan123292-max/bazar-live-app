@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খাঁন বাজার মেগা সুপারশপ</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 10px; margin: 0; }
+        .header { background: #4CAF50; color: white; padding: 15px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .filter-container { margin: 15px auto; max-width: 600px; display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+        .filter-btn { background: #fff; border: 1px solid #4CAF50; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; color: #4CAF50; font-size: 13px; }
+        .filter-btn.active { background: #4CAF50; color: #fff; }
+        .container { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        @media (max-width: 400px) { .container { grid-template-columns: 1fr; } }
+        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 10px; position: relative; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+        .badge { position: absolute; top: 8px; right: 8px; background: red; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; }
+        .price { color: #e44d26; font-size: 16px; font-weight: bold; margin: 8px 0; }
+        .unit { color: #777; font-size: 13px; }
+        .icon { font-size: 30px; margin-bottom: 5px; }
+        .btn { background: #25D366; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; display: inline-block; font-size: 14px; margin-top: 5px; width: 80%; font-weight: bold; }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 20% auto; padding: 20px; border-radius: 10px; width: 80%; max-width: 400px; text-align: left; }
+        .modal-content h3 { margin-top: 0; color: #4CAF50; }
+        .modal-content input { width: 95%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .modal-btn { background: #25D366; color: white; padding: 10px; border: none; border-radius: 5px; width: 100%; font-weight: bold; cursor: pointer; }
+        .close-btn { float: right; font-size: 20px; cursor: pointer; font-weight: bold; color: #aaa; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>খাঁন বাজার লাইভ সুপারশপ</h2>
+        <p>১০০টি আইটেমের ক্যাটাগরি ও হোয়াটসঅ্যাপ অর্ডার</p>
+    </div>
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="filterCategory('all', this)">সব আইটেম</button>
+        <button class="filter-btn" onclick="filterCategory('chal-dal', this)">চাল ও ডাল</button>
+        <button class="filter-btn" onclick="filterCategory('oil', this)">тел ও ঘি</button>
+        <button class="filter-btn" onclick="filterCategory('fish-meat', this)">মাছ ও মাংস</button>
+        <button class="filter-btn" onclick="filterCategory('dairy', this)">ডিম ও ডেইরি</button>
+        <button class="filter-btn" onclick="filterCategory('vege', this)">সবজি বাজার</button>
+        <button class="filter-btn" onclick="filterCategory('spice', this)">মশলাপাতি</button>
+        <button class="filter-btn" onclick="filterCategory('fruits', this)">ফলমূল</button>
+        <button class="filter-btn" onclick="filterCategory('grocery', this)">নাস্তা ও গ্রোসারি</button>
+    </div>
+    <div class="container" id="product-container"></div>
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 id="modalProductTitle">অর্ডার ফর্ম</h3>
+            <label>আপনার নাম:</label><input type="text" id="custName" placeholder="নাম লিখুন">
+            <label>আপনার ঠিকানা:</label><input type="text" id="custAddress" placeholder="ঠিকানা লিখুন">
+            <label>পরিমাণ:</label><input type="text" id="custQty" value="১">
+            <button class="modal-btn" onclick="sendWhatsAppOrder()">অর্ডার নিশ্চিত করুন</button>
+        </div>
+    </div>
+    <script>
+        let selectedProductId = ''; let selectedProductName = '';
+        const products = [
+            { id: "p1", cat: "chal-dal", icon: "🌾", name: "মিনিকেট চাল (প্রিমিয়াম)", unit: "১ কেজি", defaultPrice: 72 },
+            { id: "p2", cat: "chal-dal", icon: "🌾", name: "নাজিরশাইল চাল", unit: "১ কেজি", defaultPrice: 85 },
+            { id: "p3", cat: "chal-dal", icon: "🍚", name: "পোলাও চাল", unit: "১ কেজি", defaultPrice: 150 },
+            { id: "p4", cat: "chal-dal", icon: "🫘", name: "মসুর ডাল (দেশী)", unit: "১ কেজি", defaultPrice: 140 },
+            { id: "p5", cat: "chal-dal", icon: "🫘", name: "মসুর ডাল (মোটা)", unit: "১ কেজি", defaultPrice: 110 },
+            { id: "p6", cat: "chal-dal", icon: "🫘", name: "মুগ ডাল (ভাজা)", unit: "১ কেজি", defaultPrice: 165 },
+            { id: "p7", cat: "chal-dal", icon: "🫘", name: "ছোলা ডাল", unit: "১ কেজি", defaultPrice: 120 },
+            { id: "p8", cat: "chal-dal", icon: "🫘", name: "বুট ডাল", unit: "১ কেজি", defaultPrice: 105 },
+            { id: "p9", cat: "chal-dal", icon: "🫘", name: "খেসারী ডাল", unit: "১ কেজি", defaultPrice: 95 },
+            { id: "p10", cat: "chal-dal", icon: "🫘", name: "মাষকলাই ডাল", unit: "১ কেজি", defaultPrice: 160 },
+            { id: "p11", cat: "oil", icon: "🍾", name: "সয়াবিন তেল (তীর)", unit: "১ লিটার", defaultPrice: 168 },
+            { id: "p12", cat: "oil", icon: "🪔", name: "সয়াবিন তেল (৫ লিটার)", unit: "১ বোতল", defaultPrice: 810 },
+            { id: "p13", cat: "oil", icon: "🛢️", name: "সরিষার তেল", unit: "১ লিটার", defaultPrice: 240 },
+            { id: "p14", cat: "oil", icon: "🧈", name: "খাটি গাওয়া ঘি", unit: "১ কেজি", defaultPrice: 1400 },
+            { id: "p21", cat: "fish-meat", icon: "🐟", name: "ইলিশ মাছ (বড়)", unit: "১ কেজি", defaultPrice: 1200 },
+            { id: "p23", cat: "fish-meat", icon: "🥩", name: "গরুর মাংস", unit: "১ কেজি", defaultPrice: 750 },
+            { id: "p25", cat: "fish-meat", icon: "🐔", name: "ব্রয়লার মুরগি", unit: "১ কেজি", defaultPrice: 180 },
+            { id: "p36", cat: "dairy", icon: "🥚", name: "ফার্মের মুরগির ডিম", unit: "১ হালি", defaultPrice: 48 },
+            { id: "p39", cat: "dairy", icon: "🥛", name: "তরল দুধ", unit: "১ লিটার", defaultPrice: 90 },
+            { id: "p46", cat: "vege", icon: "🥔", name: "আলু (ডায়মন্ড)", unit: "১ কেজি", defaultPrice: 40 },
+            { id: "p47", cat: "vege", icon: "🧅", name: "দেশী পেঁয়াজ", unit: "১ কেজি", defaultPrice: 85 },
+            { id: "p49", cat: "vege", icon: "🧄", name: "রসুন (দেশী)", unit: "১ কেজি", defaultPrice: 220 },
+            { id: "p52", cat: "vege", icon: "🌶️", name: "কাঁচামরিচ", unit: "১ কেজি", defaultPrice: 160 },
+            { id: "p53", cat: "vege", icon: "🍅", name: "টমেটো (পাকা)", unit: "১ কেজি", defaultPrice: 120 },
+            { id: "p66", cat: "spice", icon: "🧂", name: "আয়োডিনযুক্ত লবন", unit: "১ কেজি", defaultPrice: 42 },
+            { id: "p67", cat: "spice", icon: "🍬", name: "চিনি (সাদা)", unit: "১ কেজি", defaultPrice: 135 },
+            { id: "p76", cat: "fruits", icon: "🍌", name: "সাগর কলা", unit: "১ হালি", defaultPrice: 40 },
+            { id: "p77", cat: "fruits", icon: "🍎", name: "আপেল", unit: "১ কেজি", defaultPrice: 280 },
+            { id: "p86", cat: "grocery", icon: "☕", name: "ইস্পাহানি চা", unit: "৪০০ গ্রাম", defaultPrice: 230 },
+            { id: "p91", cat: "grocery", icon: "🍜", name: "ম্যাগি নুডুলস", unit: "১ বক্স", defaultPrice: 160 }
+        ];
+        let currentCategory = 'all';
+        function renderShop() {
+            const container = document.getElementById('product-container'); container.innerHTML = '';
+            products.forEach(p => {
+                if (currentCategory !== 'all' && p.cat !== currentCategory) return;
+                const isHidden = localStorage.getItem(p.id + '_hidden') === 'true'; if (isHidden) return;
+                const livePrice = localStorage.getItem(p.id + '_price') || p.defaultPrice;
+                const liveDiscount = localStorage.getItem(p.id + '_discount') || '০';
+                const card = document.createElement('div'); card.className = 'product-card';
+                let badgeHTML = ''; if(liveDiscount !== '০' && liveDiscount !== '0') { badgeHTML = `<span class="badge">${liveDiscount}% ছাড়</span>`; }
+                card.innerHTML = `${badgeHTML}<div class="icon">${p.icon}</div><h3 style="font-size:14px; margin:5px 0;">${p.name}</h3><div class="unit">${p.unit}</div><div class="price">৳ ${livePrice}</div><button class="btn" onclick="openOrderModal('${p.id}', '${p.name}', '${livePrice}')">অর্ডার করুন</button>`;
+                container.appendChild(card);
+            });
+        }
+        function filterCategory(cat, btn) { currentCategory = cat; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderShop(); }
+        function openOrderModal(id, name, price) { selectedProductId = id; selectedProductName = name; document.getElementById('modalProductTitle').innerText = name + " - অর্ডার"; document.getElementById('orderModal').style.display = 'block'; }
+        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+        function sendWhatsAppOrder() {
+            const name = document.getElementById('custName').value; const address = document.getElementById('custAddress').value; const qty = document.getElementById('custQty').value;
+            if(!name || !address) { alert('নাম এবং ঠিকানা লিখুন!'); return; }
+            const livePrice = localStorage.getItem(selectedProductId + '_price') || products.find(p => p.id === selectedProductId).defaultPrice;
