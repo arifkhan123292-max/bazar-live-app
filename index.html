@@ -164,7 +164,7 @@
         <h3>📍 ডেলিভারি ঠিকানা ও তথ্য দিন:</h3>
         <div class="input-group">
             <label for="custName">আপনার নাম:</label>
-            <input type="text" id="custName" class="form-input" placeholder="যেমন: আরিফ خان">
+            <input type="text" id="custName" class="form-input" placeholder="যেমন: আরিফ খান">
         </div>
         <div class="input-group">
             <label for="custPhone">মোবাইল নম্বর:</label>
@@ -203,7 +203,7 @@
 <script>
     const myWhatsAppNumber = "8801700000000"; 
 
-    // ৫টি পণ্যের শর্ট লিস্ট
+    // ৫টি নির্দিষ্ট পণ্য
     const products = [
         { name: "মিনিকেট চাল (১ কেজি)", price: 70, quantity: 0 },
         { name: "নাজিরশাইল চাল (১ কেজি)", price: 85, quantity: 0 },
@@ -302,5 +302,6 @@
         let hasMatch = false;
 
         for (let i = 0; i < rows.length; i++) {
-            let productNameTd = rows[i].getElementsByTagName("td")[0]; // এখানে প্রথম সেল (index 0) সুনির্দিষ্ট করে ফিক্স করা হয়েছে
-            if (productNameTd) {
+            let cells = rows[i].getElementsByTagName("td");
+            if (cells.length > 0) {
+                let productNameTd = cells[0];
