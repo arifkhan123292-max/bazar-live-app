@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -92,7 +91,6 @@
             font-weight: bold;
             white-space: nowrap;
         }
-        /* কার্ট বাটনের নতুন ডিজাইন */
         .qty-btn {
             background-color: #3498db;
             color: white;
@@ -120,7 +118,6 @@
             cursor: pointer;
             font-weight: bold;
         }
-        /* ফুটারে টোটাল বিল ও মেইন অর্ডার বাটনের ডিজাইন */
         .cart-summary {
             margin-top: 20px;
             padding: 15px;
@@ -206,9 +203,9 @@
 <script>
     const myWhatsAppNumber = "8801700000000"; 
 
-    // পণ্যের তালিকা (সাথে পরিমাণ বা quantity ট্র্যাক করার ব্যবস্থা রাখা হয়েছে)
+    // ৫টি পণ্যের শর্ট লিস্ট (আরবি ম-এর জায়গায় বাংলা ম ঠিক করা হয়েছে)
     const products = [
-        { name: "مিনিকেট চাল (১ কেজি)", price: 70, quantity: 0 },
+        { name: "মিনিকেট চাল (১ কেজি)", price: 70, quantity: 0 },
         { name: "নাজিরশাইল চাল (১ কেজি)", price: 85, quantity: 0 },
         { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110, quantity: 0 },
         { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165, quantity: 0 },
@@ -222,7 +219,6 @@
         products.forEach((product, index) => {
             let actionHtml = '';
             
-            // যদি পরিমাণ ০ হয় তবে "যোগ করুন" বাটন দেখাবে, আর বেশি হলে +/- বাটন দেখাবে
             if (product.quantity === 0) {
                 actionHtml = `<button onclick="updateQty(${index}, 1)" class="add-cart-btn">যোগ করুন</button>`;
             } else {
@@ -245,14 +241,12 @@
         calculateTotal();
     }
 
-    // প্লাস মাইনাস বাটনের কাজ হ্যান্ডেল করার ফাংশন
     function updateQty(index, change) {
         products[index].quantity += change;
         if (products[index].quantity < 0) products[index].quantity = 0;
         displayProducts();
     }
 
-    // মোট বিল হিসাব করার ফাংশন
     function calculateTotal() {
         let total = 0;
         products.forEach(product => {
@@ -261,7 +255,6 @@
         document.getElementById("totalBillAmount").innerText = total;
     }
 
-    // হোয়াটসঅ্যাপে সম্পূর্ণ অর্ডার লিস্ট পাঠানোর মূল ফাংশন
     function sendFullOrderToWhatsApp() {
         const name = document.getElementById("custName").value.trim();
         const phone = document.getElementById("custPhone").value.trim();
@@ -272,7 +265,6 @@
             return;
         }
 
-        // কার্ট থেকে শুধু সিলেক্ট করা পণ্যগুলো আলাদা করা
         let selectedProducts = products.filter(p => p.quantity > 0);
 
         if (selectedProducts.length === 0) {
@@ -280,7 +272,6 @@
             return;
         }
 
-        // মেসেজ টেক্সট সুন্দরভাবে সাজানো
         let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার* 🛒\n\n`;
         messageText += `👤 *কাস্টমারের নাম:* ${name}\n`;
         messageText += `📞 *মোবাইল নম্বর:* ${phone}\n`;
@@ -304,3 +295,12 @@
     }
 
     function filterProducts() {
+        let input = document.getElementById("searchInput").value.toUpperCase();
+        let tableBody = document.getElementById("productTableBody");
+        let rows = tableBody.getElementsByTagName("tr");
+        let noResult = document.getElementById("noResult");
+        let hasMatch = false;
+
+        for (let i = 0; i < rows.length; i++) {
+            let productNameTd = rows[i].getElementsByTagName("td")[0]; // প্রথম সেল ফিক্স করা হয়েছে
+            if (productNameTd) {
