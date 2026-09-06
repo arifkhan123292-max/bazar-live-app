@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -24,7 +25,6 @@
             color: #2c3e50;
             margin-top: 10px;
         }
-        /* কাস্টমার ফর্মের ডিজাইন */
         .form-section {
             background: #fdfefe;
             border: 1px solid #dcdde1;
@@ -92,20 +92,60 @@
             font-weight: bold;
             white-space: nowrap;
         }
-        .buy-btn {
+        /* কার্ট বাটনের নতুন ডিজাইন */
+        .qty-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .qty-text {
+            font-weight: bold;
+            font-size: 16px;
+            display: inline-block;
+            min-width: 20px;
+            text-align: center;
+        }
+        .add-cart-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        /* ফুটারে টোটাল বিল ও মেইন অর্ডার বাটনের ডিজাইন */
+        .cart-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .total-bill {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .submit-order-btn {
             background-color: #25D366;
             color: white;
-            padding: 8px 12px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
             font-weight: bold;
-            font-size: 14px;
-            white-space: nowrap;
-            cursor: pointer;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
         }
-        .buy-btn:hover {
+        .submit-order-btn:hover {
             background-color: #1ebd58;
         }
         #noResult {
@@ -122,7 +162,7 @@
 <div class="container">
     <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
     
-    <!-- নতুন ডেলিভারি ফর্ম -->
+    <!-- ডেলিভারি ফর্ম -->
     <div class="form-section">
         <h3>📍 ডেলিভারি ঠিকানা ও তথ্য দিন:</h3>
         <div class="input-group">
@@ -155,19 +195,24 @@
     </table>
     
     <div id="noResult">দুঃখিত, এই নামের কোনো পণ্য খুঁজে পাওয়া যায়নি!</div>
+
+    <!-- কার্ট সামারি ও মেইন অর্ডার বাটন -->
+    <div class="cart-summary">
+        <div class="total-bill">🛒 মোট কার্ট বিল: <span id="totalBillAmount">0</span> ৳</div>
+        <button onclick="sendFullOrderToWhatsApp()" class="submit-order-btn">💬 হোয়াটসঅ্যাপে সম্পূর্ণ অর্ডার পাঠান</button>
+    </div>
 </div>
 
 <script>
-    // আপনার টেস্ট করার জন্য ডেমো নম্বর
     const myWhatsAppNumber = "8801700000000"; 
 
-    // ঠিক ৫টি পণ্য
+    // পণ্যের তালিকা (সাথে পরিমাণ বা quantity ট্র্যাক করার ব্যবস্থা রাখা হয়েছে)
     const products = [
-        { name: "মিনিকেট চাল (১ কেজি)", price: 70 },
-        { name: "নাজিরশাইল চাল (১ কেজি)", price: 85 },
-        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110 },
-        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165 },
-        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280 }
+        { name: "مিনিকেট চাল (১ কেজি)", price: 70, quantity: 0 },
+        { name: "নাজিরশাইল চাল (১ কেজি)", price: 85, quantity: 0 },
+        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110, quantity: 0 },
+        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165, quantity: 0 },
+        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280, quantity: 0 }
     ];
 
     function displayProducts() {
@@ -175,81 +220,87 @@
         tableBody.innerHTML = "";
 
         products.forEach((product, index) => {
+            let actionHtml = '';
+            
+            // যদি পরিমাণ ০ হয় তবে "যোগ করুন" বাটন দেখাবে, আর বেশি হলে +/- বাটন দেখাবে
+            if (product.quantity === 0) {
+                actionHtml = `<button onclick="updateQty(${index}, 1)" class="add-cart-btn">যোগ করুন</button>`;
+            } else {
+                actionHtml = `
+                    <button onclick="updateQty(${index}, -1)" class="qty-btn">-</button>
+                    <span class="qty-text">${product.quantity}</span>
+                    <button onclick="updateQty(${index}, 1)" class="qty-btn">+</button>
+                `;
+            }
+
             let row = `<tr>
                 <td><strong>${product.name}</strong></td>
                 <td class="price">${product.price} ৳</td>
-                <td style="text-align: center;">
-                    <button onclick="orderProduct(${index})" class="buy-btn">💬 অর্ডার করুন</button>
-                </td>
+                <td style="text-align: center;">${actionHtml}</td>
             </tr>`;
             
             tableBody.innerHTML += row;
         });
+
+        calculateTotal();
     }
 
-    // হোয়াটসঅ্যাপে অর্ডার পাঠানোর মূল ফাংশন
-    function orderProduct(productIndex) {
-        const product = products[productIndex];
-        
-        // ফর্ম থেকে কাস্টমারের ইনপুট ডেটা নেওয়া
+    // প্লাস মাইনাস বাটনের কাজ হ্যান্ডেল করার ফাংশন
+    function updateQty(index, change) {
+        products[index].quantity += change;
+        if (products[index].quantity < 0) products[index].quantity = 0;
+        displayProducts();
+    }
+
+    // মোট বিল হিসাব করার ফাংশন
+    function calculateTotal() {
+        let total = 0;
+        products.forEach(product => {
+            total += product.price * product.quantity;
+        });
+        document.getElementById("totalBillAmount").innerText = total;
+    }
+
+    // হোয়াটসঅ্যাপে সম্পূর্ণ অর্ডার লিস্ট পাঠানোর মূল ফাংশন
+    function sendFullOrderToWhatsApp() {
         const name = document.getElementById("custName").value.trim();
         const phone = document.getElementById("custPhone").value.trim();
         const address = document.getElementById("custAddress").value.trim();
 
-        // ফর্ম খালি থাকলে কাস্টমারকে সতর্ক করা
         if (name === "" || phone === "" || address === "") {
             alert("অনুগ্রহ করে আপনার নাম, মোবাইল নম্বর এবং সম্পূর্ণ ঠিকানা লিখুন!");
             return;
         }
 
-        // সুন্দরভাবে হোয়াটসঅ্যাপ মেসেজ সাজানো
-        let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার*\n\n`;
+        // কার্ট থেকে শুধু সিলেক্ট করা পণ্যগুলো আলাদা করা
+        let selectedProducts = products.filter(p => p.quantity > 0);
+
+        if (selectedProducts.length === 0) {
+            alert("আপনার কার্ট খালি! অনুগ্রহ করে প্রথমে পণ্য 'যোগ করুন'।");
+            return;
+        }
+
+        // মেসেজ টেক্সট সুন্দরভাবে সাজানো
+        let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার* 🛒\n\n`;
         messageText += `👤 *কাস্টমারের নাম:* ${name}\n`;
         messageText += `📞 *মোবাইল নম্বর:* ${phone}\n`;
         messageText += `📍 *ডেলিভারি ঠিকানা:* ${address}\n\n`;
-        messageText += `📦 *পণ্যের নাম:* ${product.name}\n`;
-        messageText += `💵 *মূল্য:* ${product.price} টাকা\n\n`;
+        messageText += `📦 *পণ্যের তালিকা:*\n`;
+
+        let totalBill = 0;
+        selectedProducts.forEach((product, i) => {
+            let itemTotal = product.price * product.quantity;
+            totalBill += itemTotal;
+            messageText += `${i + 1}. ${product.name} - ${product.quantity}টি x ${product.price}৳ = ${itemTotal}৳\n`;
+        });
+
+        messageText += `\n💵 *সর্বমোট বিল:* ${totalBill} টাকা\n\n`;
         messageText += `অর্ডারটি দ্রুত নিশ্চিত করার অনুরোধ রইলো। ধন্যবাদ!`;
 
         let encodedText = encodeURIComponent(messageText);
         let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
 
-        // নতুন ট্যাবে হোয়াটসঅ্যাপ ওপেন করা
         window.open(whatsappUrl, '_blank');
     }
 
     function filterProducts() {
-        let input = document.getElementById("searchInput").value.toUpperCase();
-        let tableBody = document.getElementById("productTableBody");
-        let rows = tableBody.getElementsByTagName("tr");
-        let noResult = document.getElementById("noResult");
-        let hasMatch = false;
-
-        for (let i = 0; i < rows.length; i++) {
-            let productNameTd = rows[i].getElementsByTagName("td")[0]; // প্রথম সেল (নাম)
-            if (productNameTd) {
-                let productName = productNameTd.innerText || productNameTd.textContent;
-                if (productName.toUpperCase().indexOf(input) > -1) {
-                    rows[i].style.display = "";
-                    hasMatch = true;
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
-        }
-
-        if (hasMatch) {
-            noResult.style.display = "none";
-        } else {
-            noResult.style.display = "block";
-        }
-    }
-
-    document.getElementById("searchInput").addEventListener("keyup", filterProducts);
-    displayProducts();
-</script>
-
-</body>
-</html>
-
-    
