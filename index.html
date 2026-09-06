@@ -3,35 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আজকের লাইভ বাজার</title>
+    <title>লাইভ বাজার ম্যানেজমেন্ট</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .product-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
-        .btn { display: block; width: 100%; background: #4CAF50; color: white; padding: 12px; text-decoration: none; border: none; font-size: 16px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; box-sizing: border-box; text-align: center; }
+        body { font-family: 'Arial', sans-serif; background-color: #f7f9fa; margin: 0; padding: 15px; text-align: center; }
+        .header-btn { background-color: #28a745; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+        .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 500px; margin: 0 auto; }
+        .product-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eef2f5; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-card h3 { font-size: 15px; margin: 0 0 5px 0; color: #333; }
+        .price { color: #dc3545; font-weight: bold; font-size: 16px; margin: 5px 0; }
+        .btn-group { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-blue { background-color: #007bff; color: white; border: none; padding: 6px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; flex: 1; font-weight: bold; }
+        .btn-red { background-color: #dc3545; color: white; border: none; padding: 6px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; flex: 1; font-weight: bold; }
+        .order-btn { background-color: #28a745; color: white; border: none; padding: 8px; font-size: 13px; border-radius: 4px; cursor: pointer; margin-top: 8px; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>আজকের লাইভ বাজার</h2>
-    
-    <div class="product-card">
-        <h3>ইলিশ মাছ (বড়)</h3>
-        <p>পরিমাণ: ১ কেজি</p>
-        <h4>মূল্য: ৳ ৯০০</h4>
-        <a href="https://wa.me" target="_blank" class="btn">হোয়াটসঅ্যাপে কিনুন</a>
+    <!-- ওপরের মেইন বাটন -->
+    <button class="header-btn" onclick="alert('নতুন পণ্য যোগ করার ফিচারটি ব্যাকএন্ড ডাটাবেজ ছাড়া গিটহাবে স্থায়ী হবে না। তবে নিচের বাটনগুলো কাজ করবে।')">তালিকায় যোগ করুন</button>
+
+    <!-- প্রোডাক্ট গ্রিড এরিয়া -->
+    <div class="grid-container" id="productGrid">
+        
+        <!-- চাল -->
+        <div class="product-card" id="p1">
+            <div>
+                <h3>মিনিকেট চাল (১ কেজি)</h3>
+                <div class="price">৳ <span id="price-p1">70</span></div>
+            </div>
+            <div>
+                <button class="order-btn" onclick="orderWhatsApp('মিনিকেট চাল (১ কেজি)', 'p1')">হোয়াটসঅ্যাপে কিনুন</button>
+                <div class="btn-group">
+                    <button class="btn-blue" onclick="changePrice('p1', 'মিনিকেট চাল (১ কেজি)')">দাম বদলান</button>
+                    <button class="btn-red" onclick="removeProduct('p1')">বাদ দিন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- আলু -->
+        <div class="product-card" id="p2">
+            <div>
+                <h3>দেশি আলু (১ কেজি)</h3>
+                <div class="price">৳ <span id="price-p2">100</span></div>
+            </div>
+            <div>
+                <button class="order-btn" onclick="orderWhatsApp('দেশি আলু (১ কেজি)', 'p2')">হোয়াটসঅ্যাপে কিনুন</button>
+                <div class="btn-group">
+                    <button class="btn-blue" onclick="changePrice('p2', 'দেশি আলু (১ কেজি)')">দাম বদলান</button>
+                    <button class="btn-red" onclick="removeProduct('p2')">বাদ দিন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- তেল -->
+        <div class="product-card" id="p3">
+            <div>
+                <h3>সয়াবিন তেল (১ লিটার)</h3>
+                <div class="price">৳ <span id="price-p3">160</span></div>
+            </div>
+            <div>
+                <button class="order-btn" onclick="orderWhatsApp('সয়াবিন তেল (১ লিটার)', 'p3')">হোয়াটসঅ্যাপে কিনুন</button>
+                <div class="btn-group">
+                    <button class="btn-blue" onclick="changePrice('p3', 'সয়াবিন তেল (১ লিটার)')">দাম বদলান</button>
+                    <button class="btn-red" onclick="removeProduct('p3')">বাদ দিন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- চিনি -->
+        <div class="product-card" id="p4">
+            <div>
+                <h3>চিনি (১ কেজি)</h3>
+                <div class="price">৳ <span id="price-p4">130</span></div>
+            </div>
+            <div>
+                <button class="order-btn" onclick="orderWhatsApp('চিনি (১ কেজি)', 'p4')">হোয়াটসঅ্যাপে কিনুন</button>
+                <div class="btn-group">
+                    <button class="btn-blue" onclick="changePrice('p4', 'চিনি (১ কেজি)')">দাম বদলান</button>
+                    <button class="btn-red" onclick="removeProduct('p4')">বাদ দিন</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="product-card">
-        <h3>গরুর মাংস (প্রিমিয়াম)</h3>
-        <p>পরিমাণ: ১ কেজি</p>
-        <h4>মূল্য: ৳ ৭৫০</h4>
-        <a href="https://wa.me" target="_blank" class="btn">হোয়াটসঅ্যাপে কিনুন</a>
-    </div>
-</div>
+    <!-- বাটনগুলো সচল করার জাভাস্ক্রিপ্ট কোড -->
+    <script>
+        // ⚠️ এখানে আপনার আসল নম্বরটি ৮৮ সহ বসিয়ে দিন
+        const myWhatsAppNumber = "8801712329210"; 
 
+        // দাম বদলানোর ফাংশন
+        function changePrice(id, name) {
+            let newPrice = prompt(name + " এর নতুন দাম লিখুন (শুধু সংখ্যা):");
+            if (newPrice != null && newPrice != "") {
+                document.getElementById('price-' + id).innerText = newPrice;
+            }
+        }
+
+        // পণ্য বাদ দেওয়ার ফাংশন
+        function removeProduct(id) {
+            if (confirm("আপনি কি নিশ্চিতভাবে এই পণ্যটি তালিকা থেকে বাদ দিতে চান?")) {
+                document.getElementById(id).remove();
+            }
+        }
+
+        // হোয়াটসঅ্যাপে ডায়নামিক অর্ডার পাঠানোর ফাংশন
+        function orderWhatsApp(name, id) {
+            let currentPrice = document.getElementById('price-' + id).innerText;
+            let message = "*নতুন অর্ডার এসেছে!*%0A%0A" +
+                          "📦 *পণ্য:* " + name + "%0A" +
+                          "💰 *লাইভ মূল্য:* ৳ " + currentPrice;
+            window.open("https://wa.me" + myWhatsAppNumber + "?text=" + message, "_blank");
+        }
+    </script>
 </body>
 </html>
+
 
 
