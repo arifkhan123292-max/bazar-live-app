@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -24,14 +24,52 @@
             color: #2c3e50;
             margin-top: 10px;
         }
+        /* কাস্টমার ফর্মের ডিজাইন */
+        .form-section {
+            background: #fdfefe;
+            border: 1px solid #dcdde1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .form-section h3 {
+            margin-top: 0;
+            color: #2f3640;
+            font-size: 16px;
+            border-bottom: 2px solid #2ecc71;
+            padding-bottom: 5px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: #2ecc71;
+        }
         .search-box {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 15px 0;
             box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
             font-size: 16px;
+            outline: none;
         }
         .product-table {
             width: 100%;
@@ -42,14 +80,17 @@
             padding: 12px 10px;
             border-bottom: 1px solid #ddd;
             text-align: left;
+            vertical-align: middle;
         }
         .product-table th {
             background-color: #34495e;
             color: white;
+            font-weight: bold;
         }
         .price {
             color: #e74c3c;
             font-weight: bold;
+            white-space: nowrap;
         }
         .buy-btn {
             background-color: #25D366;
@@ -60,6 +101,9 @@
             display: inline-block;
             font-weight: bold;
             font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
         }
         .buy-btn:hover {
             background-color: #1ebd58;
@@ -77,6 +121,23 @@
 
 <div class="container">
     <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
+    
+    <!-- নতুন ডেলিভারি ফর্ম -->
+    <div class="form-section">
+        <h3>📍 ডেলিভারি ঠিকানা ও তথ্য দিন:</h3>
+        <div class="input-group">
+            <label for="custName">আপনার নাম:</label>
+            <input type="text" id="custName" class="form-input" placeholder="যেমন: আরিফ খান">
+        </div>
+        <div class="input-group">
+            <label for="custPhone">মোবাইল নম্বর:</label>
+            <input type="tel" id="custPhone" class="form-input" placeholder="যেমন: 017XXXXXXXX">
+        </div>
+        <div class="input-group">
+            <label for="custAddress">পূর্ণাঙ্গ ঠিকানা:</label>
+            <input type="text" id="custAddress" class="form-input" placeholder="যেমন: বাসা নং ৪, রোড নং ২, মিরপুর, ঢাকা">
+        </div>
+    </div>
     
     <input type="text" id="searchInput" class="search-box" placeholder="প্রয়োজনীয় পণ্যটি খুঁজে পেতে নিচে সার্চ করুন...">
     
@@ -97,42 +158,64 @@
 </div>
 
 <script>
+    // আপনার টেস্ট করার জন্য ডেমো নম্বর
     const myWhatsAppNumber = "8801700000000"; 
 
+    // ঠিক ৫টি পণ্য
     const products = [
         { name: "মিনিকেট চাল (১ কেজি)", price: 70 },
         { name: "নাজিরশাইল চাল (১ কেজি)", price: 85 },
         { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110 },
         { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165 },
-        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280 },
-        { name: "দেশি পেঁয়াজ (১ কেজি)", price: 90 },
-        { name: "দেশি রসুন (১ কেজি)", price: 220 },
-        { name: "দেশি আলু (১ কেজি)", price: 55 },
-        { name: "লাল টমেটো (১ কেজি)", price: 80 },
-        { name: "কাঁচামরিচ (১ কেজি)", price: 120 },
-        { name: "প্যাকেট লবণ (১ কেজি)", price: 42 },
-        { name: "গুঁড়ো দুধ ডানো (৪০০ গ্রাম)", price: 410 }
+        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280 }
     ];
 
     function displayProducts() {
         const tableBody = document.getElementById("productTableBody");
         tableBody.innerHTML = "";
 
-        products.forEach(product => {
-            let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার*\n\n📦 *পণ্যের নাম:* ${product.name}\n💵 *মূল্য:* ${product.price} টাকা\n\nঅর্ডারটি নিশ্চিত করতে চাচ্ছি। ধন্যবাদ!`;
-            let encodedText = encodeURIComponent(messageText);
-            let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
-
+        products.forEach((product, index) => {
             let row = `<tr>
                 <td><strong>${product.name}</strong></td>
                 <td class="price">${product.price} ৳</td>
                 <td style="text-align: center;">
-                    <a href="${whatsappUrl}" target="_blank" class="buy-btn">💬 অর্ডার করুন</a>
+                    <button onclick="orderProduct(${index})" class="buy-btn">💬 অর্ডার করুন</button>
                 </td>
             </tr>`;
             
             tableBody.innerHTML += row;
         });
+    }
+
+    // হোয়াটসঅ্যাপে অর্ডার পাঠানোর মূল ফাংশন
+    function orderProduct(productIndex) {
+        const product = products[productIndex];
+        
+        // ফর্ম থেকে কাস্টমারের ইনপুট ডেটা নেওয়া
+        const name = document.getElementById("custName").value.trim();
+        const phone = document.getElementById("custPhone").value.trim();
+        const address = document.getElementById("custAddress").value.trim();
+
+        // ফর্ম খালি থাকলে কাস্টমারকে সতর্ক করা
+        if (name === "" || phone === "" || address === "") {
+            alert("অনুগ্রহ করে আপনার নাম, মোবাইল নম্বর এবং সম্পূর্ণ ঠিকানা লিখুন!");
+            return;
+        }
+
+        // সুন্দরভাবে হোয়াটসঅ্যাপ মেসেজ সাজানো
+        let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার*\n\n`;
+        messageText += `👤 *কাস্টমারের নাম:* ${name}\n`;
+        messageText += `📞 *মোবাইল নম্বর:* ${phone}\n`;
+        messageText += `📍 *ডেলিভারি ঠিকানা:* ${address}\n\n`;
+        messageText += `📦 *পণ্যের নাম:* ${product.name}\n`;
+        messageText += `💵 *মূল্য:* ${product.price} টাকা\n\n`;
+        messageText += `অর্ডারটি দ্রুত নিশ্চিত করার অনুরোধ রইলো। ধন্যবাদ!`;
+
+        let encodedText = encodeURIComponent(messageText);
+        let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
+
+        // নতুন ট্যাবে হোয়াটসঅ্যাপ ওপেন করা
+        window.open(whatsappUrl, '_blank');
     }
 
     function filterProducts() {
@@ -143,7 +226,7 @@
         let hasMatch = false;
 
         for (let i = 0; i < rows.length; i++) {
-            let productNameTd = rows[i].getElementsByTagName("td")[0];
+            let productNameTd = rows[i].getElementsByTagName("td")[0]; // প্রথম সেল (নাম)
             if (productNameTd) {
                 let productName = productNameTd.innerText || productNameTd.textContent;
                 if (productName.toUpperCase().indexOf(input) > -1) {
@@ -168,4 +251,5 @@
 
 </body>
 </html>
+
     
