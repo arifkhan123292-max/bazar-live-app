@@ -1,4 +1,4 @@
-
+l>
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -13,12 +13,17 @@
         .btn { display: block; width: 100%; background: #4CAF50; color: white; padding: 10px; text-decoration: none; border: none; font-size: 16px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
     
-    <!-- হোয়াটসঅ্যাপে অর্ডার পাঠানোর কোড -->
+    <!-- হোয়াটসঅ্যাপে অর্ডার পাঠানোর সঠিক কোড -->
     <script>
     function orderOnWhatsApp(productName, productPrice) {
-        let myWhatsAppNumber = "8801700000000"; // ⚠️ এখানে আপনার আসল নম্বরটি বসিয়ে নিতে পারেন
-        let message = `*নতুন অর্ডার এসেছে!*%0A%0A📦 *পণ্য:* ${productName}%0A💰 *মূল্য:* ${productPrice}`;
-        window.open(`https://wa.me{myWhatsAppNumber}?text=${message}`, '_blank');
+        // আপনার আসল নম্বর এখানে ৮৮ কোডসহ একদম সেট করা আছে
+        let myWhatsAppNumber = "8801712329210"; 
+        
+        let message = "*নতুন অর্ডার এসেছে!*%0A%0A" +
+                      "📦 *পণ্য:* " + productName + "%0A" +
+                      "💰 *মূল্য:* " + productPrice;
+        
+        window.open("https://wa.me" + myWhatsAppNumber + "?text=" + message, "_blank");
     }
     </script>
 </head>
@@ -29,20 +34,20 @@
     
     <!-- প্রোডাক্ট ১: ইলিশ মাছ -->
     <div class="product-card">
-        <span class="badge">০% ছাড়</span>
+        <span class="badge">১০% ছাড়</span>
         <h3>ইলিশ মাছ (বড়)</h3>
         <p>১ কেজি</p>
-        <h4>মূল্য: ৳ ০</h4>
-        <button class="btn" onclick="orderOnWhatsApp('ইলিশ মাছ (বড়)', '৳ ০')">কিনুন</button>
+        <h4>মূল্য: ৳ ৯০০</h4>
+        <button class="btn" onclick="orderOnWhatsApp('ইলিশ মাছ (বড়)', '৳ ৯০০')">কিনুন</button>
     </div>
 
     <!-- প্রোডাক্ট ২: গরুর মাংস -->
     <div class="product-card">
-        <span class="badge">০% ছাড়</span>
+        <span class="badge">৫% ছাড়</span>
         <h3>গরুর মাংস (প্রিমিয়াম)</h3>
         <p>১ কেজি</p>
-        <h4>মূল্য: ৳ ০</h4>
-        <button class="btn" onclick="orderOnWhatsApp('গরুর মাংস (প্রিমিয়াম)', '৳ ০')">কিনুন</button>
+        <h4>মূল্য: ৳ ৭৫০</h4>
+        <button class="btn" onclick="orderOnWhatsApp('গরুর মাংস (প্রিমিয়াম)', '৳ ৭৫০')">কিনুন</button>
     </div>
     
 </div>
