@@ -1,34 +1,85 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আজকের লাইভ বাজার - ১০০টি পণ্য তালিকা</title>
+    <title>আজকের লাইভ বাজার</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background-color: #f7f9fa; margin: 0; padding: 15px; text-align: center; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { color: #333; margin-bottom: 5px; }
-        .search-box { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #28a745; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
-        .search-box:focus { box-shadow: 0 0 8px rgba(40, 167, 69, 0.3); }
-        .product-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .product-table th, .product-table td { padding: 12px 10px; border-bottom: 1px solid #eef2f5; text-align: left; font-size: 14px; }
-        .product-table th { background-color: #f8f9fa; color: #555; font-weight: bold; }
-        .price { color: #dc3545; font-weight: bold; white-space: nowrap; }
-        .buy-btn { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 13px; display: inline-block; text-align: center; }
-        .buy-btn:hover { background-color: #218838; }
-        .no-result { display: none; padding: 20px; color: #888; font-style: italic; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 10px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 10px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .product-table th, .product-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .product-table th {
+            background-color: #34495e;
+            color: white;
+        }
+        .price {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .buy-btn {
+            background-color: #25D366;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .buy-btn:hover {
+            background-color: #1ebd58;
+        }
+        #noResult {
+            display: none;
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
-    <p style="color: #666; margin: 0;">প্রয়োজনীয় পণ্যটি খুঁজে পেতে নিচে সার্চ করুন</p>
     
-    <!-- সার্চ বক্স -->
-    <input type="text" id="searchInput" class="search-box" placeholder="পণ্যের নাম লিখে সার্চ করুন (যেমন: চাল, ডাল, তেল)..." onkeyup="filterProducts()">
-
-    <!-- পণ্য টেবিল -->
+    <input type="text" id="searchInput" class="search-box" placeholder="প্রয়োজনীয় পণ্যটি খুঁজে পেতে নিচে সার্চ করুন...">
+    
     <table class="product-table">
         <thead>
             <tr>
@@ -38,328 +89,83 @@
             </tr>
         </thead>
         <tbody id="productTableBody">
-            <!-- পণ্যগুলো এখানে অটোমেটিক লোড হবে -->
+            <!-- পণ্য এখানে অটো বসবে -->
         </tbody>
     </table>
     
-    <div id="noResult" class="no-result">দুঃখিত, এই নামের কোনো পণ্য খুঁজে পাওয়া যায়নি!</div>
+    <div id="noResult">দুঃখিত, এই নামের কোনো পণ্য খুঁজে পাওয়া যায়নি!</div>
 </div>
 
 <script>
-    // ⚠️ নিচে আপনার নিজের আসল সচল হোয়াটসঅ্যাপ নম্বরটি ৮৮ সহ বসিয়ে দিন
-    const myWhatsAppNumber = "8801712329210"; 
+    const myWhatsAppNumber = "8801700000000"; 
 
-    // ১০০টি পণ্যের তালিকা
     const products = [
-        { name: "মিনিকেট চাল (১ কেজি)", price: "৳ ৭০" },
-        { name: "নাজিরশাইল চাল (১ কেজি)", price: "৳ ৮৫" },
-        { name: "আটাশ চাল (১ কেজি)", price: "৳ ৬০" },
-        { name: "চিনিকুড়া পোলার চাল (১ কেজি)", price: "৳ ১৫০" },
-        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: "৳ ১৪০" },
-        { name: "মসুর ডাল ছোট দানা (১ কেজি)", price: "৳ ১৫০" },
-        { name: "মাষকলাই ডাল (১ কেজি)", price: "৳ ১৬০" },
-        { name: "মুগ ডাল প্রিমিয়াম (১ কেজি)", price: "৳ ১৭০" },
-        { name: "ছোলা বুট (১ কেজি)", price: "৳ ১১০" },
-        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: "৳ ১৬৫" },
-        { name: "সয়াবিন তেল (৫ লিটার বোতল)", price: "৳ ৮১০" },
-        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: "৳ ২৫০" },
-        { name: "দেশি পেঁয়াজ (১ কেজি)", price: "৳ ৯০" },
-        { name: "দেশি রসুন (১ কেজি)", price: "৳ ২২০" },
-        { name: "আমদানি করা আদা (১ কেজি)", price: "৳ ২৪০" },
-        { name: "দেশি আলু (১ কেজি)", price: "৳ ৬০" },
-        { name: "लाल टमेटो (১ কেজি)", price: "৳ ৮০" },
-        { name: "কাঁচামরিচ (১ কেজি)", price: "৳ ১২০" },
-        { name: "দেশি চিনি (১ কেজি)", price: "৳ ১৩৫" },
-        { name: "প্যাকেট লবণ (১ কেজি)", price: "৳ ৪২" },
-        { name: "গুঁড়ো দুধ ডানো (৪০০ গ্রাম)", price: "৳ ৪৬০" },
-        { name: "গুঁড়ো দুধ ডিপ্লোমা (৫০০ গ্রাম)", price: "৳ ৫১০" },
-        { name: "চা পাতা ইস্পাহানি মির্জাপুর (৪০০ গ্রাম)", price: "৳ ২৩০" },
-        { name: "হলুদ গুঁড়ো রাঁধুনী (২০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "মরিচ গুঁড়ো রাঁধুনী (২০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "ধনিয়া গুঁড়ো (১০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "জিরা গুঁড়ো (১০০ গ্রাম)", price: "৳ ১০০" },
-        { name: "গোটা জিরা (১০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "পাঁচফোড়ন (১০০ গ্রাম)", price: "৳ ৪০" },
-        { name: "গরম মসলা গুঁড়ো (৫০ গ্রাম)", price: "৳ ৮০" },
-        { name: "এলাচ (৫০ গ্রাম)", price: "৳ ৩০০" },
-        { name: "দারুচিনি (১০০ গ্রাম)", price: "৳ ৭০" },
-        { name: "লবঙ্গ (৫০ গ্রাম)", price: "৳ ৯০" },
-        { name: "তেজপাতা (১০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "খাঁটি গাওয়া ঘি (৫০০ গ্রাম)", price: "৳ ৭৫০" },
-        { name: "ডিম ফার্মের লাল (১ ডজন)", price: "৳ ১৫০" },
-        { name: "ডিম ফার্মের সাদা (১ ডজন)", price: "৳ ১৪৫" },
-        { name: "দেশি মুরগি (১ কেজি)", price: "৳ ৫৫০" },
-        { name: "ব্রয়লার মুরগি (১ কেজি)", price: "৳ ১৯0" },
-        { name: "কক মুরগি / সোনালী (১ কেজি)", price: "৳ ৩২০" },
-        { name: "গরুর মাংস প্রিমিয়াম (১ কেজি)", price: "৳ ৭৮০" },
-        { name: "খাসির মাংস (১ কেজি)", price: "৳ ১১০০" },
-        { name: "রুই মাছ বড় (১ কেজি)", price: "৳ ৩৮০" },
-        { name: "কাতল মাছ (১ কেজি)", price: "৳ ৪০০" },
-        { name: "ইলিশ মাছ মাঝারি (১ কেজি)", price: "৳ ১২০০" },
-        { name: "চিংড়ি মাছ মাঝারি (১ কেজি)", price: "৳ ৭৫০" },
-        { name: "পাঙাশ মাছ (১ কেজি)", price: "৳ ১৮০" },
-        { name: "তেলাপিয়া মাছ (১ কেজি)", price: "৳ ২২০" },
-        { name: "পটল (১ কেজি)", price: "৳ ৫০" },
-        { name: "বেগুন লম্বা (১ কেজি)", price: "৳ ৬০" },
-        { name: "করল্লা / উচ্ছে (১ কেজি)", price: "৳ ৮০" },
-        { name: "ঢ্যাঁড়শ (১ কেজি)", price: "৳ ৫০" },
-        { name: "মিষ্টি কুমড়া (১টি মাঝারি)", price: "৳ ৬০" },
-        { name: "লাউ (১টি বড়)", price: "৳ ৭০" },
-        { name: "শসা দেশি (১ কেজি)", price: "৳ ৬০" },
-        { name: "লেবু কাগজি (৪টি)", price: "৳ ৩০" },
-        { name: "কাঁচকলা (৪টি)", price: "৳ ৪০" },
-        { name: "পেঁপে কাঁচা (১ কেজি)", price: "৳ ৪৫" },
-        { name: "মিষ্টি আলু (১ কেজি)", price: "৳ ৭০" },
-        { name: "মুড়ি প্যাকেট (৫০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "চিঁড়া দেশি (১ কেজি)", price: "৳ ৯০" },
-        { name: "সুজি প্যাকেট (৫০০ গ্রাম)", price: "৳ ৪৫" },
-        { name: "সেমাই রাঁধুনী লাচ্ছা (২০০ গ্রাম)", price: "৳ ৪৫" },
-        { name: "নুডলস কোকোলা ফ্যামিলি প্যাক", price: "৳ ১৮০" },
-        { name: "ম্যাকারনি প্যাকেট (৪০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "টমেটো সস ফ্রুটিকা (৫০০ গ্রাম)", price: "৳ ১৩০" },
-        { name: "সাদা ভিনেগার (৪০০ মিলি)", price: "৳ ৬০" },
-        { name: "কাসুন্দি বোতল (৩০০ মিলি)", price: "৳ ৮০" },
-        { name: "مধু খাঁটি সুন্দরবন (৫০০ গ্রাম)", price: "৳ ৪৫০" },
-        { name: "খেজুর মরিয়ম প্রিমিয়াম (৫০০ গ্রাম)", price: "৳ ৪০০" },
-        { name: "কিশমিশ (২০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "কাঠবাদাম (২০০ গ্রাম)", price: "৳ ২২০" },
-        { name: "কাজুবাদাম (২০০ গ্রাম)", price: "৳ ২৫০" },
-        { name: "তরল দুধ আড়ং (১ লিটার)", price: "৳ ৯০" },
-        { name: "মিষ্টি দই দেশি (১ কেজি)", price: "৳ ২৬০" },
-        { name: "টক দই (৫০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "মিনিকেট চালের আটা (১ কেজি)", price: "৳ ৬৫" },
-        { name: "প্যাকেট ময়দা তির (১ কেজি)", price: "৳ ৭৫" },
-        { name: "বেসন বুটের ডাল (৫০০ গ্রাম)", price: "৳ ৭০" },
-        { name: "সোডা রান্নার (১০০ গ্রাম)", price: "৳ ৩০" },
-        { name: "সিরকা / ভিনেগার বোতল", price: "৳ ৭০" },
-        { name: "ডিশ ওয়াশিং লিকুইড ভিম (৫০০ মিলি)", price: "৳ ১৩৫" },
-        { name: "লন্ড্রি সাবান হুইল (২০০ গ্রাম)", price: "৳ ৩৫" },
-        { name: "ডিটারজেন্ট সার্ফ এক্সেল (১ কেজি)", price: "৳ ২৪০" },
-        { name: "গায়ে মাখার সাবান লাক্স (১০০ গ্রাম)", price: "৳ ৭৫" },
-        { name: "লাইফবয় সাবান (১০০ গ্রাম)", price: "৳ ৬০" },
-        { name: "শ্যাম্পু সানসিল্ক বোতল (১৮০ মিলি)", price: "৳ ২২০" },
-        { name: "টুথপেস্ট পেপসোডেন্ট (২০০ গ্রাম)", price: "৳ ১৪৫" },
-        { name: "নারকেল তেল প্যারাসুট (২০০ মিলি)", price: "৳ ১৩৫" },
-        { name: "টয়লেট ক্লিনার হারপিক (৭৫০ মিলি)", price: "৳ ১৮৫" },
-        { name: "মশার কয়েল গুডнайট (১ প্যাকেট)", price: "৳ ৮০" },
-        { name: "টিস্যু পেপার ফেসিয়াল বসনিয়া", price: "৳ ৭০" },
-        { name: "টয়লেট টিস্যু বাশুণ্ধরা (১ রোল)", price: "৳ ২৫" },
-        { name: "ম্যাচ বক্স / দিয়াশলাই (১ বক্স)", price: "৳ ৩" },
-        { name: "তরল হ্যান্ডওয়াশ ডেটল রিফিল", price: "৳ ৯০" },
-        { name: "আচার আমের টক মিষ্টি (৪০০ গ্রাম)", price: "৳ ১২ো" },
-        { name: "তেঁতুল দেশি কাঁচা/পাকা (১ কেজি)", price: "৳ ১৮০" },
-        { name: "সুপারি আস্ত (১ কুড়ি/২০টি)", price: "৳ ৮০" },
-        { name: "পান পাতা দেশি (১ বিড়া)", price: "৳ ৬০" },
-        { name: "জর্দা হাকিমপুরী (২৫ গ্রাম)", price: "৳ ৫০" }
+        { name: "মিনিকেট চাল (১ কেজি)", price: 70 },
+        { name: "নাজিরশাইল চাল (১ কেজি)", price: 85 },
+        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110 },
+        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165 },
+        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280 },
+        { name: "দেশি পেঁয়াজ (১ কেজি)", price: 90 },
+        { name: "দেশি রসুন (১ কেজি)", price: 220 },
+        { name: "দেশি আলু (১ কেজি)", price: 55 },
+        { name: "লাল টমেটো (১ কেজি)", price: 80 },
+        { name: "কাঁচামরিচ (১ কেজি)", price: 120 },
+        { name: "প্যাকেট লবণ (১ কেজি)", price: 42 },
+        { name: "গুঁড়ো দুধ ডানো (৪০০ গ্রাম)", price: 410 }
     ];
 
-    // টেবিল লোড করার ফাংশন
-    function loadProducts() {
+    function displayProducts() {
         const tableBody = document.getElementById("productTableBody");
         tableBody.innerHTML = "";
-        
+
         products.forEach(product => {
-            let encodedText = encodeURIComponent(`*নতুন বাজার অর্ডার!*\n\n📦 *পণ্যের নাম:* ${product.name}\n💰 *মূল্য:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`);
+            let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার*\n\n📦 *পণ্যের নাম:* ${product.name}\n💵 *মূল্য:* ${product.price} টাকা\n\nঅর্ডারটি নিশ্চিত করতে চাচ্ছি। ধন্যবাদ!`;
+            let encodedText = encodeURIComponent(messageText);
             let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
 
             let row = `<tr>
                 <td><strong>${product.name}</strong></td>
-                <td class="price">${product.price}</td>
-                <td style="text-align: center;"><a href="${whatsappUrl}" target="_blank" class="buy-btn">কিনুন</a></td>
+                <td class="price">${product.price} ৳</td>
+                <td style="text-align: center;">
+                    <a href="${whatsappUrl}" target="_blank" class="buy-btn">💬 অর্ডার করুন</a>
+                </td>
             </tr>`;
-            tableBody.innerHTML += row;
-        });
-    }
-
-    // লাইভ সার্চ ফিল্টার ফাংশন (ফিক্সড)
-    function filterProducts() {
-        let input = document.getElementById("searchInput").value.toLowerCase();
-        let tableBody = document.getElementById("productTableBody");
-        let rows = tableBody.getElementsByTagName("tr");
-        let noResult = document.getElementById("noResult");
-        let hasMatch = false;
-
-        for (let i = 0; i < rows.length; i++) {
             
-            <!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আজকের লাইভ বাজার - ১০০টি পণ্য তালিকা</title>
-    <style>
-        body { font-family: 'Arial', sans-serif; background-color: #f7f9fa; margin: 0; padding: 15px; text-align: center; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        h2 { color: #333; margin-bottom: 5px; }
-        .search-box { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #28a745; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
-        .search-box:focus { box-shadow: 0 0 8px rgba(40, 167, 69, 0.3); }
-        .product-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .product-table th, .product-table td { padding: 12px 10px; border-bottom: 1px solid #eef2f5; text-align: left; font-size: 14px; }
-        .product-table th { background-color: #f8f9fa; color: #555; font-weight: bold; }
-        .price { color: #dc3545; font-weight: bold; white-space: nowrap; }
-        .buy-btn { background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 13px; display: inline-block; text-align: center; }
-        .buy-btn:hover { background-color: #218838; }
-        .no-result { display: none; padding: 20px; color: #888; font-style: italic; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
-    <p style="color: #666; margin: 0;">প্রয়োজনীয় পণ্যটি খুঁজে পেতে নিচে সার্চ করুন</p>
-    
-    <input type="text" id="searchInput" class="search-box" placeholder="পণ্যের নাম লিখে সার্চ করুন (যেমন: চাল, ডাল, তেল)..." onkeyup="filterProducts()">
-
-    <table class="product-table">
-        <thead>
-            <tr>
-                <th>আইটেম বা পণ্যের নাম</th>
-                <th>মূল্য</th>
-                <th style="text-align: center;">অ্যাকশন</th>
-            </tr>
-        </thead>
-        <tbody id="productTableBody">
-            <!-- পণ্যগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
-        </tbody>
-    </table>
-    
-    <div id="noResult" class="no-result">দুঃখিত, এই নামের কোনো পণ্য খুঁজে পাওয়া যায়নি!</div>
-</div>
-
-<script>
-    // ⚠️ নিচে ৮৮০১৭১২৩২৯২১০ কেটে আপনার নিজের আসল সচল হোয়াটসঅ্যাপ নম্বরটি বসিয়ে দিন
-    const myWhatsAppNumber = "8801712329210"; 
-
-    // ১০০টি পণ্যের তালিকা
-    const products = [
-        { name: "মিনিকেট চাল (১ কেজি)", price: "৳ ৭০" },
-        { name: "নাজিরশাইল চাল (১ কেজি)", price: "৳ ৮৫" },
-        { name: "আটাশ চাল (১ কেজি)", price: "৳ ৬০" },
-        { name: "চিনিকুড়া পোলার চাল (১ কেজি)", price: "৳ ১৫০" },
-        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: "৳ ১৪০" },
-        { name: "মসুর ডাল ছোট দানা (১ কেজি)", price: "৳ ১৫০" },
-        { name: "মাষকলাই ডাল (১ কেজি)", price: "৳ ১৬০" },
-        { name: "মুগ ডাল প্রিমিয়াম (১ কেজি)", price: "৳ ১৭০" },
-        { name: "ছোলা বুট (১ কেজি)", price: "৳ ১১০" },
-        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: "৳ ১৬৫" },
-        { name: "সয়াবিন তেল (৫ লিটার বোতল)", price: "৳ ৮১০" },
-        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: "৳ ২৫০" },
-        { name: "দেশি পেঁয়াজ (১ কেজি)", price: "৳ ৯০" },
-        { name: "দেশি রসুন (১ কেজি)", price: "৳ ২২০" },
-        { name: "আমদানি করা আদা (১ কেজি)", price: "৳ ২৪০" },
-        { name: "দেশি আলু (১ কেজি)", price: "৳ ৬০" },
-        { name: "লাল টমেটো (১ কেজি)", price: "৳ ৮০" },
-        { name: "কাঁচামরিচ (১ কেজি)", price: "৳ ১২০" },
-        { name: "দেশি চিনি (১ কেজি)", price: "৳ ১৩৫" },
-        { name: "প্যাকেট লবণ (১ কেজি)", price: "৳ ৪২" },
-        { name: "গুঁড়ো দুধ ডানো (৪০০ গ্রাম)", price: "৳ ৪৬০" },
-        { name: "গুঁড়ো দুধ ডিপ্লোমা (৫০০ গ্রাম)", price: "৳ ৫১০" },
-        { name: "চা পাতা ইস্পাহানি মির্জাপুর (৪০০ গ্রাম)", price: "৳ ২৩০" },
-        { name: "হলুদ গুঁড়ো রাঁধুনী (২০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "مরিচ গুঁড়ো রাঁধুনী (২০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "ধনিয়া গুঁড়ো (১০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "জিরা গুঁড়ো (১০০ গ্রাম)", price: "৳ ১০০" },
-        { name: "গোটা জিরা (১০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "পাঁচফোড়ন (১০০ গ্রাম)", price: "৳ ৪০" },
-        { name: "গরম মসলা গুঁড়ো (৫০ গ্রাম)", price: "৳ ৮০" },
-        { name: "এলাচ (৫০ গ্রাম)", price: "৳ ৩০০" },
-        { name: "দারুচিনি (১০০ গ্রাম)", price: "৳ ৭০" },
-        { name: "লবঙ্গ (৫০ গ্রাম)", price: "৳ ৯০" },
-        { name: "তেজপাতা (১০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "খাঁটি গাওয়া ঘি (৫০০ গ্রাম)", price: "৳ ৭৫০" },
-        { name: "ডিম ফার্মের লাল (১ ডজন)", price: "৳ ১৫০" },
-        { name: "ডিম ফার্মের সাদা (১ ডজন)", price: "৳ ১৪৫" },
-        { name: "দেশি মুরগি (১ কেজি)", price: "৳ ৫৫০" },
-        { name: "ব্রয়লার মুরগি (১ কেজি)", price: "৳ ১৯০" },
-        { name: "কক মুরগি / সোনালী (১ কেজি)", price: "৳ ৩২০" },
-        { name: "গরুর মাংস প্রিমিয়াম (১ কেজি)", price: "৳ ৭৮০" },
-        { name: "খাসির মাংস (১ কেজি)", price: "৳ ১১০০" },
-        { name: "রুই মাছ বড় (১ কেজি)", price: "৳ ৩৮০" },
-        { name: "কাতল মাছ (১ কেজি)", price: "৳ ৪০০" },
-        { name: "ইলিশ মাছ মাঝারি (১ কেজি)", price: "৳ ১২০০" },
-        { name: "চिंगড়ি মাছ মাঝারি (১ কেজি)", price: "৳ ৭৫০" },
-        { name: "পাঙাশ মাছ (১ কেজি)", price: "৳ ১৮০" },
-        { name: "তেলাপিয়া মাছ (১ কেজি)", price: "৳ ২২০" },
-        { name: "পটল (১ কেজি)", price: "৳ ৫০" },
-        { name: "বেগুন লম্বা (১ কেজি)", price: "৳ ৬০" },
-        { name: "করল্লা / উচ্ছে (১ কেজি)", price: "৳ ৮০" },
-        { name: "ঢ্যাঁড়শ (১ কেজি)", price: "৳ ৫০" },
-        { name: "মিষ্টি কুমড়া (১টি মাঝারি)", price: "৳ ৬০" },
-        { name: "লাউ (১টি বড়)", price: "৳ ৭০" },
-        { name: "শসা দেশি (১ কেজি)", price: "৳ ৬০" },
-        { name: "লেবু কাগজি (৪টি)", price: "৳ ৩০" },
-        { name: "কাঁচকলা (৪টি)", price: "৳ ৪০" },
-        { name: "পেঁপে কাঁচা (১ কেজি)", price: "৳ ৪৫" },
-        { name: "মিষ্টি আলু (১ কেজি)", price: "৳ ৭০" },
-        { name: "মুড়ি প্যাকেট (৫০০ গ্রাম)", price: "৳ ৫০" },
-        { name: "চিঁড়া দেশি (১ কেজি)", price: "৳ ৯০" },
-        { name: "সুজি প্যাকেট (৫০০ গ্রাম)", price: "৳ ৪৫" },
-        { name: "সেমাই রাঁধুনী লাচ্ছা (২০০ গ্রাম)", price: "৳ ৪৫" },
-        { name: "নুডলস কোকোলা ফ্যামিলি প্যাক", price: "৳ ১৮০" },
-        { name: "م্যাকারনি প্যাকেট (৪০০ গ্রাম)", price: "৳ ৯০" },
-        { name: "টমেটো সস ফ্রুটিকা (৫০০ গ্রাম)", price: "৳ ১৩০" },
-        { name: "সাদা ভিনেগার (৪০০ মিলি)", price: "৳ ৬০" },
-        { name: "কাসুন্দি বোতল (৩০০ মিলি)", price: "৳ ৮০" },
-        { name: "مধু খাঁটি সুন্দরবন (৫০০ গ্রাম)", price: "৳ ৪৫০" },
-        { name: "খেজুর মরিয়ম প্রিমিয়াম (৫০০ গ্রাম)", price: "৳ ৪০০" },
-        { name: "কিশমিশ (২০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "কাঠবাদাম (২০০ গ্রাম)", price: "৳ ২২০" },
-        { name: "কাজুবাদাম (২০০ গ্রাম)", price: "৳ ২৫০" },
-        { name: "তরল দুধ আড়ং (১ লিটার)", price: "৳ ৯০" },
-        { name: "মিষ্টি দই দেশি (১ কেজি)", price: "৳ ২৬০" },
-        { name: "টক দই (৫০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "মিনিকেট চালের আটা (১ কেজি)", price: "৳ ৬৫" },
-        { name: "প্যাকেট ময়দা তির (১ কেজি)", price: "৳ ৭৫" },
-        { name: "বেসন বুটের ডাল (৫০০ গ্রাম)", price: "৳ ৭০" },
-        { name: "সোডা রান্নার (১০০ গ্রাম)", price: "৳ ৩০" },
-        { name: "সিরকা / ভিনেগার বোতল", price: "৳ ৭০" },
-        { name: "ডিশ ওয়াশিং লিকুইড ভিম (৫০০ মিলি)", price: "৳ ১৩৫" },
-        { name: "লন্ড্রি সাবান হুইল (২০০ গ্রাম)", price: "৳ ৩৫" },
-        { name: "ডিটারজেন্ট সার্ফ এক্সেল (১ কেজি)", price: "৳ ২৪০" },
-        { name: "গায়ে মাখার সাবান লাক্স (১০০ গ্রাম)", price: "৳ ৭৫" },
-        { name: "লাইফবয় সাবান (১০০ গ্রাম)", price: "৳ ৬০" },
-        { name: "শ্যাম্পু সানসিল্ক বোতল (১৮০ মিলি)", price: "৳ ২২০" },
-        { name: "টুথপেস্ট পেপসোডেন্ট (২০০ গ্রাম)", price: "৳ ১৪৫" },
-        { name: "নারকেল তেল প্যারাসুট (২০০ মিলি)", price: "৳ ১৩৫" },
-        { name: "টয়লেট ক্লিনার হারপিক (৭৫০ মিলি)", price: "৳ ১৮৫" },
-        { name: "مশার কয়েল গুডнайট (১ প্যাকেট)", price: "৳ ৮০" },
-        { name: "টিস্যু পেপার ফেসিয়াল বসনিয়া", price: "৳ ৭০" },
-        { name: "টয়লেট টিস্যু বাশুণ্ধরা (১ রোল)", price: "৳ ২৫" },
-        { name: "م্যাচ বক্স / দিয়াশলাই (১ বক্স)", price: "৳ ৩" },
-        { name: "তরল হ্যান্ডওয়াশ ডেটল রিফিল", price: "৳ ৯০" },
-        { name: "আচার আমের টক মিষ্টি (৪০০ গ্রাম)", price: "৳ ১২০" },
-        { name: "তেঁতুল দেশি কাঁচা/পাকা (১ কেজি)", price: "৳ ১৮০" },
-        { name: "সুপারি আস্ত (১ কুড়ি/২০টি)", price: "৳ ৮০" },
-        { name: "পান পাতা দেশি (১ বিড়া)", price: "৳ ৬০" },
-        { name: "জর্দা হাকিমপুরী (২৫ গ্রাম)", price: "৳ ৫০" }
-    ];
-
-    function loadProducts() {
-        const tableBody = document.getElementById("productTableBody");
-        tableBody.innerHTML = "";
-        
-        products.forEach(product => {
-            let encodedText = encodeURIComponent(`*নতুন বাজার অর্ডার!*\n\n📦 *পণ্যের নাম:* ${product.name}\n💰 *মূল্য:* ${product.price}\n\nদয়া করে অর্ডারটি কনফার্ম করুন।`);
-            let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
-
-            let row = `<tr>
-                <td><strong>${product.name}</strong></td>
-                <td class="price">${product.price}</td>
-                <td style="text-align: center;"><a href="${whatsappUrl}" target="_blank" class="buy-btn">কিনুন</a></td>
-            </tr>`;
             tableBody.innerHTML += row;
         });
     }
 
     function filterProducts() {
-        let input = document.getElementById("searchInput").value.toLowerCase();
+        let input = document.getElementById("searchInput").value.toUpperCase();
         let tableBody = document.getElementById("productTableBody");
         let rows = tableBody.getElementsByTagName("tr");
         let noResult = document.getElementById("noResult");
         let hasMatch = false;
 
         for (let i = 0; i < rows.length; i++) {
-            let productName = rows[i].getElementsByTagName("td")[0].innerText.toLowerCase();
-            if (productName.includes(input)) {
+            let productNameTd = rows[i].getElementsByTagName("td")[0];
+            if (productNameTd) {
+                let productName = productNameTd.innerText || productNameTd.textContent;
+                if (productName.toUpperCase().indexOf(input) > -1) {
+                    rows[i].style.display = "";
+                    hasMatch = true;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
 
+        if (hasMatch) {
+            noResult.style.display = "none";
+        } else {
+            noResult.style.display = "block";
+        }
+    }
 
+    document.getElementById("searchInput").addEventListener("keyup", filterProducts);
+    displayProducts();
+</script>
+
+</body>
+</html>
+    
