@@ -3,105 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আজকের লাইভ বাজার</title>
+    <title>আজকের লাইভ বাজার তালিকা</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f6f9;
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
             padding: 10px;
+            display: flex;
+            justify-content: center;
         }
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-top: 10px;
-        }
-        .form-section {
-            background: #fdfefe;
-            border: 1px solid #dcdde1;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .form-section h3 {
-            margin-top: 0;
-            color: #2f3640;
-            font-size: 16px;
-            border-bottom: 2px solid #2ecc71;
-            padding-bottom: 5px;
-        }
-        .input-group {
-            margin-bottom: 10px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-input {
+            max-width: 500px;
             width: 100%;
-            padding: 8px 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #cccccc;
+        }
+        .header h2 {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+        .form-box {
+            border: 1px solid #2ecc71;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fbfcfc;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
             border-radius: 5px;
             font-size: 14px;
-            outline: none;
         }
-        .form-input:focus {
-            border-color: #2ecc71;
+        .form-group textarea {
+            height: 60px;
+            resize: vertical;
         }
-        .search-box {
-            width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            box-sizing: border-box;
-            border: 2px solid #2ecc71;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-        }
-        .product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        .product-table th, .product-table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-            vertical-align: middle;
-        }
-        .product-table th {
-            background-color: #34495e;
-            color: white;
-            font-weight: bold;
-        }
-        .price {
-            color: #e74c3c;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-        .qty-btn {
-            background-color: #3498db;
+        .submit-btn {
+            background-color: #27ae60;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
             font-weight: bold;
             font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 0 5px;
+            width: 100%;
+            box-shadow: 0 3px 0 #1e8449;
         }
+        .table-header {
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .product-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #ededed;
+            font-size: 15px;
+        }
+        .col-name { flex: 2; font-weight: bold; color: #222; }
+        .col-price { flex: 1.2; text-align: center; font-weight: bold; }
+        .col-action { flex: 1.2; text-align: right; }
+        
+        .order-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
+        #successMessage {
+            display: none;
+            padding: 25px 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .discount-price {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
+    </div>
+
+    <div id="successMessage">
+        <h3>🎉 অর্ডার সফল হয়েছে!</h3>
+        <p id="summaryText">আপনার অর্ডারটি আমাদের সিস্টেমে সংরক্ষিত হয়েছে।</p>
+    </div>
+
+    <!-- কাস্টমার ফর্ম -->
+    <div class="form-box" id="formContainer">
+        <div style="color: #d35400; font-weight: bold; margin-bottom: 12px;">📍 ডেলিভারি ঠিকানা ও তথ্য দিন:</div>
+        <form id="orderForm">
+            <div class="form-group">
+                <label>আপনার নাম:</label>
+                <input type="text" id="userName" placeholder="যেমন: আরিফ খান" required>
+            </div>
+            <div class="form-group">
+                <label>মোবাইল নম্বর:</label>
+                <input type="tel" id="userMobile" placeholder="যেমন: 017XXXXXXXX" pattern="[0-9]{11}" required>
+            </div>
+            <div class="form-group">
+                <label>পূর্ণাঙ্গ ঠিকানা:</label>
+                <textarea id="userAddress" placeholder="যেমন: বাসা নং ৪, রোড নং ২, মিরপুর, ঢাকা" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">অর্ডার নিশ্চিত করুন</button>
+        </form>
+    </div>
+
+    <div class="table-header">
+        <div class="col-name">পণ্যের নাম</div>
+        <div class="col-price">মূল্য</div>
+        <div class="col-action">অ্যাকশন</div>
+    </div>
+
+    <!-- এই ডিভ-এর ভেতরে ২৫টি পণ্য স্বয়ংক্রিয়ভাবে লাইভ দামসহ শো করবে -->
+    <div id="customerProductList"></div>
+</div>
+
+<script>
+    // অ্যাডমিন প্যানেলের সাথে হুবহু মিল রাখা ২৫টি পণ্যের তালিকা
+    const products = [
+        { id: "p1", name: "মিনিকেট চাল" },
+        { id: "p2", name: "নাজিরশাইল চাল" },
+        { id: "p3", name: "পোলাও চাল" },
+        { id: "p4", name: "মসুর ডাল (দেশী)" },
+        { id: "p5", name: "মসুর ডাল (মোটা)" },
+        { id: "p6", name: "মুগ ডাল" },
+        { id: "p7", name: "ছোলা ডাল" },
+        { id: "p8", name: "সয়াবিন তেল (১ লিটার)" },
+        { id: "p9", name: "সয়াবিন তেল (৫ লিটার)" },
+        { id: "p10", name: "খাঁটি সরিষার তেল" },
+        { id: "p11", name: "দেশী পেঁয়াজ" },
+        { id: "p12", name: "রসুন" },
+        { id: "p13", name: "আদা" },
+        { id: "p14", name: "প্যাকেট চিনি" },
+        { id: "p15", name: "আয়োডিনযুক্ত লবণ" },
+        { id: "p16", name: "আটা (২ কেজি)" },
+        { id: "p17", name: "ময়দা (২ কেজি)" },
+        { id: "p18", name: "ফার্মের ডিম (ডজন)" },
+        { id: "p19", name: "गुঁড়ো দুধ (৫০০ গ্রাম)" },
+        { id: "p20", name: "চা পাতা" },
+        { id: "p21", name: "হলুদ গুঁড়ো" },
+        { id: "p22", name: "মরিচ গুঁড়ো" },
+        { id: "p23", name: "জিরা" },
+        { id: "p24", name: "ধনে গুঁড়ো" },
+        { id: "p25", name: "তেজপাতা ও গরম মসলা" }
+    ];
+
+    let selectedProduct = "";
+
+    // অ্যাডমিন প্যানেল থেকে সেভ করা লাইভ দাম ও ছাড় লোড করার ফাংশন
+    function loadCustomerPanel() {
+        const container = document.getElementById('customerProductList');
+        let htmlContent = "";
+
+        products.forEach(product => {
+            // যদি কোনো আইটেম অ্যাডমিন প্যানেল থেকে "বাদ দিন" দেওয়া হয়, তবে তা কাস্টমার দেখবে না
+            if (localStorage.getItem('hide-' + product.id) === 'true') {
+                return;
+            }
+
+            // লোকাল স্টোরেজ থেকে লাইভ দাম ও ছাড় রিড করা
+            let savedPrice = localStorage.getItem('price-' + product.id) || "০";
+            let savedDiscount = localStorage.getItem('discount-' + product.id) || "0";
+
+            let priceDisplay = `<span class="discount-price">${savedPrice} ৳</span>`;
+            
+            // যদি কোনো ছাড় (%) দেওয়া থাকে তবে দাম হিসাব করে দেখানো
+            if (parseInt(savedDiscount) > 0 && parseInt(savedPrice) > 0) {
+                let discountAmount = (parseInt(savedPrice) * parseInt(savedDiscount)) / 100;
+                let finalPrice = Math.round(parseInt(savedPrice) - discountAmount);
+                priceDisplay = `<span class="original-price">${savedPrice}৳</span><span class="discount-price">${finalPrice} ৳</span>`;
+            }
+
+            htmlContent += `
+            <div class="product-row">
+                <div class="col-name">${product.name}</div>
+                <div class="col-price">${priceDisplay}</div>
+                <div class="col-action">
+                    <button class="order-btn" onclick="selectProduct('${product.name}')">অর্ডার</button>
+                </div>
+            </div>
+            `;
+        });
+
+        container.innerHTML = htmlContent;
+    }
+
+    function selectProduct(productName) {
+        selectedProduct = productName;
+        document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' });
+        alert(`আপনি "${productName}" সিলেক্ট করেছেন। উপরোক্ত ফর্মে তথ্য দিয়ে নিশ্চিত করুন।`);
+    }
+
+    // ফর্ম সাবমিট
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const name = document.getElementById('userName').value;
+        
+        let summary = `ধন্যবাদ <strong>${name}</strong>! `;
+        if(selectedProduct) {
+            summary += `আপনার নির্বচিত পণ্য <strong>${selectedProduct}</strong> এর অর্ডারটি সফল হয়েছে।`;
+        } else {
+            summary += `আপনার অর্ডারটি সফল হয়েছে।`;
+        }
+        
+        document.getElementById('summaryText').innerHTML = summary;
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.onload = function() {
+        loadCustomerPanel();
+    };
+</script>
+
+</body>
+</html>
         .qty-text {
             font-weight: bold;
             font-size: 16px;
