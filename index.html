@@ -374,104 +374,308 @@
     const myWhatsAppNumber = "8801700000000"; 
 
     // ৫টি নির্দিষ্ট পণ্য
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আজকের লাইভ বাজার তালিকা</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #cccccc;
+        }
+        .header h2 {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+        .form-box {
+            border: 1px solid #2ecc71;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fbfcfc;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .table-header {
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .product-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #ededed;
+            font-size: 15px;
+        }
+        .col-name { flex: 2; font-weight: bold; color: #222; text-align: left; }
+        .col-price { flex: 1.2; text-align: center; font-weight: bold; }
+        .col-action { flex: 1.2; text-align: right; }
+        
+        .order-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+        }
+        .order-btn.added {
+            background-color: #e67e22;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .total-bill {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .whatsapp-btn {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .original-price {
+            text-decoration: line-through;
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .discount-price {
+            color: #e74c3c;
+        }
+        .no-product {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>🛒 আজকের লাইভ বাজার তালিকা</h2>
+    </div>
+
+    <!-- কাস্টমার ফর্ম -->
+    <div class="form-box" id="formContainer">
+        <div style="color: #d35400; font-weight: bold; margin-bottom: 12px;">📍 ডেলিভারি ঠিকানা ও তথ্য দিন:</div>
+        <form id="orderForm">
+            <div class="form-group">
+                <label>আপনার নাম:</label>
+                <input type="text" id="userName" placeholder="যেমন: আরিফ খান" required>
+            </div>
+            <div class="form-group">
+                <label>মোবাইল নম্বর:</label>
+                <input type="tel" id="userMobile" placeholder="যেমন: 017XXXXXXXX" pattern="[0-9]{11}" required>
+            </div>
+            <div class="form-group">
+                <label>পূর্ণাঙ্গ ঠিকানা:</label>
+                <textarea id="userAddress" placeholder="যেমন: বাসা নং ৪, রোড নং ২, মিরপুর, ঢাকা" required></textarea>
+            </div>
+        </form>
+    </div>
+
+    <!-- লাইভ সার্চ ইনপুট -->
+    <input type="text" id="cusSearch" class="search-box" placeholder="প্রয়োজনীয় পণ্যটি খুঁজে পেতে এখানে সার্চ করুন..." onkeyup="filterCusItems()">
+
+    <div class="table-header">
+        <div class="col-name">আইটেম বা পণ্যের নাম</div>
+        <div class="col-price">মূল্য</div>
+        <div class="col-action">অ্যাকশন</div>
+    </div>
+
+    <!-- পণ্যের তালিকা এরিয়া -->
+    <div id="customerProductList"></div>
+
+    <!-- কার্ট এবং হোয়াটসঅ্যাপ সেকশন -->
+    <div class="cart-summary">
+        <div class="total-bill">🛒 মোট কার্ট বিল: <span id="totalBillAmount">0</span> ৳</div>
+        <button class="whatsapp-btn" onclick="sendToWhatsApp()">
+            💬 হোয়াটস্অ্যাপে সম্পূর্ণ অর্ডার পাঠান
+        </button>
+    </div>
+</div>
+
+<script>
+    // ২৫টি প্রধান পণ্যের তালিকা
     const products = [
-        { name: "মিনিকেট চাল (১ কেজি)", price: 70, quantity: 0 },
-        { name: "নাজিরশাইল চাল (১ কেজি)", price: 85, quantity: 0 },
-        { name: "মসুর ডাল বড় দানা (১ কেজি)", price: 110, quantity: 0 },
-        { name: "সয়াবিন তেল (১ লিটার বোতল)", price: 165, quantity: 0 },
-        { name: "খাঁটি সরিষার তেল (১ লিটার)", price: 280, quantity: 0 }
+        { id: "p1", name: "মিনিকেট চাল" },
+        { id: "p2", name: "নাজিরশাইল চাল" },
+        { id: "p3", name: "পোলাও চাল" },
+        { id: "p4", name: "মসুর ডাল (দেশী)" },
+        { id: "p5", name: "মসুর ডাল (মোটা)" },
+        { id: "p6", name: "মুগ ডাল" },
+        { id: "p7", name: "ছোলা ডাল" },
+        { id: "p8", name: "সয়াবিন তেল (১ লিটার)" },
+        { id: "p9", name: "সয়াবিন তেল (৫ লিটার)" },
+        { id: "p10", name: "খাঁটি সরিষার তেল" },
+        { id: "p11", name: "দেশী পেঁয়াজ" },
+        { id: "p12", name: "রসুন" },
+        { id: "p13", name: "আদা" },
+        { id: "p14", name: "প্যাকেট চিনি" },
+        { id: "p15", name: "আয়োডিনযুক্ত লবণ" },
+        { id: "p16", name: "আটা (২ কেজি)" },
+        { id: "p17", name: "ময়দা (২ কেজি)" },
+        { id: "p18", name: "ফার্মের ডিম (ডজন)" },
+        { id: "p19", name: "গুঁড়ো দুধ (৫০০ গ্রাম)" },
+        { id: "p20", name: "চা পাতা" },
+        { id: "p21", name: "হলুদ গুঁড়ো" },
+        { id: "p22", name: "মরিচ গুঁড়ো" },
+        { id: "p23", name: "জিরা" },
+        { id: "p24", name: "ধনে গুঁড়ো" },
+        { id: "p25", name: "তেজপাতা ও গরম মসলা" }
     ];
 
-    function displayProducts() {
-        const tableBody = document.getElementById("productTableBody");
-        tableBody.innerHTML = "";
+    let cart = {};
 
-        products.forEach((product, index) => {
-            let actionHtml = '';
+    function loadCustomerPanel() {
+        const container = document.getElementById('customerProductList');
+        let htmlContent = "";
+        let visibleCount = 0;
+
+        products.forEach(product => {
+            if (localStorage.getItem('hide-' + product.id) === 'true') {
+                return;
+            }
+            visibleCount++;
+
+            let savedPrice = parseInt(localStorage.getItem('price-' + product.id)) || 0;
+            let savedDiscount = parseInt(localStorage.getItem('discount-' + product.id)) || 0;
+
+            let finalPrice = savedPrice;
+            let priceDisplay = `<span class="discount-price">${savedPrice} ৳</span>`;
             
-            if (product.quantity === 0) {
-                actionHtml = `<button onclick="updateQty(${index}, 1)" class="add-cart-btn">যোগ করুন</button>`;
-            } else {
-                actionHtml = `
-                    <button onclick="updateQty(${index}, -1)" class="qty-btn">-</button>
-                    <span class="qty-text">${product.quantity}</span>
-                    <button onclick="updateQty(${index}, 1)" class="qty-btn">+</button>
-                `;
+            if (savedDiscount > 0 && savedPrice > 0) {
+                let discountAmount = (savedPrice * savedDiscount) / 100;
+                finalPrice = Math.round(savedPrice - discountAmount);
+                priceDisplay = `<span class="original-price">${savedPrice}৳</span><span class="discount-price">${finalPrice} ৳</span>`;
             }
 
-            let row = `<tr>
-                <td><strong>${product.name}</strong></td>
-                <td class="price">${product.price} ৳</td>
-                <td style="text-align: center;">${actionHtml}</td>
-            </tr>`;
-            
-            tableBody.innerHTML += row;
+            htmlContent += `
+            <div class="product-row" data-name="${product.name}">
+                <div class="col-name">${product.name}</div>
+                <div class="col-price">${priceDisplay}</div>
+                <div class="col-action">
+                    <button class="order-btn" id="btn-${product.id}" onclick="toggleCart('${product.id}', '${product.name}', ${finalPrice})">অর্ডার</button>
+                </div>
+            </div>
+            `;
         });
 
-        calculateTotal();
+        if (visibleCount === 0) {
+            htmlContent = `<div class="no-product">দুঃখিত, বর্তমানে কোনো পণ্য তালিকায় নেই!</div>`;
+        }
+
+        container.innerHTML = htmlContent;
     }
 
-    function updateQty(index, change) {
-        products[index].quantity += change;
-        if (products[index].quantity < 0) products[index].quantity = 0;
-        displayProducts();
+    function toggleCart(id, name, price) {
+        const btn = document.getElementById(`btn-${id}`);
+        if (cart[id]) {
+            delete cart[id];
+            btn.innerText = "অর্ডার";
+            btn.classList.remove('added');
+        } else {
+            cart[id] = { name: name, price: price };
+            btn.innerText = "যোগ হয়েছে";
+            btn.classList.add('added');
+        }
+        calculateTotal();
     }
 
     function calculateTotal() {
         let total = 0;
-        products.forEach(product => {
-            total += product.price * product.quantity;
-        });
-        document.getElementById("totalBillAmount").innerText = total;
+        for (let id in cart) {
+            total += cart[id].price;
+        }
+        document.getElementById('totalBillAmount').innerText = total;
     }
 
-    function sendFullOrderToWhatsApp() {
-        const name = document.getElementById("custName").value.trim();
-        const phone = document.getElementById("custPhone").value.trim();
-        const address = document.getElementById("custAddress").value.trim();
+    function sendToWhatsApp() {
+        const name = document.getElementById('userName').value;
+        const mobile = document.getElementById('userMobile').value;
+        const address = document.getElementById('userAddress').value;
 
-        if (name === "" || phone === "" || address === "") {
-            alert("অনুগ্রহ করে আপনার নাম, মোবাইল নম্বর এবং সম্পূর্ণ ঠিকানা লিখুন!");
-            return;
-        }
+        if (!name || !mobile || !address) {
+            alert("দয়া করে নাম, মোবাইল নম্বর এবং পূর্ণাঙ্গ ঠিকানা দিন।");
+            document.getElementById('formContainer').scrollIntoView({ behavior: 'smooth' });
 
-        let selectedProducts = products.filter(p => p.quantity > 0);
-
-        if (selectedProducts.length === 0) {
-            alert("আপনার কার্ট খালি! অনুগ্রহ করে প্রথমে পণ্য 'যোগ করুন'।");
-            return;
-        }
-
-        let messageText = `🛒 *নতুন লাইভ বাজার অর্ডার* 🛒\n\n`;
-        messageText += `👤 *কাস্টমারের নাম:* ${name}\n`;
-        messageText += `📞 *মোবাইল নম্বর:* ${phone}\n`;
-        messageText += `📍 *ডেলিভারি ঠিকানা:* ${address}\n\n`;
-        messageText += `📦 *পণ্যের তালিকা:*\n`;
-
-        let totalBill = 0;
-        selectedProducts.forEach((product, i) => {
-            let itemTotal = product.price * product.quantity;
-            totalBill += itemTotal;
-            messageText += `${i + 1}. ${product.name} - ${product.quantity}টি x ${product.price}৳ = ${itemTotal}৳\n`;
-        });
-
-        messageText += `\n💵 *সর্বমোট বিল:* ${totalBill} টাকা\n\n`;
-        messageText += `অর্ডারটি দ্রুত নিশ্চিত করার অনুরোধ রইলো। ধন্যবাদ!`;
-
-        let encodedText = encodeURIComponent(messageText);
-        let whatsappUrl = `https://wa.me{myWhatsAppNumber}?text=${encodedText}`;
-
-        window.open(whatsappUrl, '_blank');
-    }
-
-    function filterProducts() {
-        let input = document.getElementById("searchInput").value.toUpperCase();
-        let tableBody = document.getElementById("productTableBody");
-        let rows = tableBody.getElementsByTagName("tr");
-        let noResult = document.getElementById("noResult");
-        let hasMatch = false;
-
-        for (let i = 0; i < rows.length; i++) {
-            let cells = rows[i].getElementsByTagName("td");
-            if (cells.length > 0) {
-                let productNameTd = cells[0];
