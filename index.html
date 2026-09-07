@@ -1,0 +1,28 @@
+<script>
+function displayLiveBazar() {
+    // অ্যাডমিন প্যানেল থেকে সেভ করা পণ্যগুলো নিয়ে আসা
+    const products = JSON.parse(localStorage.getItem('bazarProducts')) || [];
+    const container = document.getElementById('product-list-container'); // আপনার পণ্যের তালিকার মেইন ডিভ/টেবিল আইডি
+    
+    if(products.length === 0) {
+        container.innerHTML = "<p>কোনো পণ্য খুঁজে পাওয়া যায়নি।</p>";
+        return;
+    }
+    
+    container.innerHTML = ""; // আগের ডেমো ডেটা মুছে ফেলা
+    
+    // ২৫টি পণ্য লুপের মাধ্যমে পেজে ডাইনামিকালি বসানো
+    products.forEach(product => {
+        container.innerHTML += `
+            <div class="product-item">
+                <span>${product.name}</span>
+                <span>मूल्य: ${product.price} ৳</span>
+                <button class="add-cart-btn" onclick="addToCart(${product.id})">অ্যাড করুন</button>
+            </div>
+        `;
+    });
+}
+
+// পেজ লোড হলেই লাইভ তালিকা দেখাবে
+window.onload = displayLiveBazar;
+</script>
