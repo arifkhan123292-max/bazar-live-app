@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Bazar - আজকের লাইভ বাজার তালিকা</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f9fa; color: #333; }
+        .header { background-color: #111; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header h1 { margin: 0; font-size: 20px; }
+        .star-icon { color: #2ecc71; font-size: 24px; }
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h2 { font-size: 22px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
+        .info-section { margin-bottom: 20px; }
+        .info-title { color: #e67e22; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #555; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
+        /* Search Box */
+        .search-box { width: 100%; padding: 10px; border: 1px solid #2ecc71; border-radius: 4px; margin-bottom: 15px; box-sizing: border-box; font-size: 14px; }
+
+        /* Product Cart Section */
+        .cart-section { margin-top: 20px; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .product-name { font-weight: 500; font-size: 16px; }
+        .product-price { color: #2c3e50; font-weight: bold; }
+        
+        .cart-summary { margin-top: 20px; padding: 15px; background-color: #2c3e50; color: white; border-radius: 8px; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .total-bill { font-weight: bold; font-size: 18px; color: #2ecc71; }
+        
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 15px;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        .whatsapp-btn:hover { background-color: #27ae60; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Khan Bazar</h1>
+        <div class="star-icon"><i class="fas fa-star"></i></div>
+    </div>
+
+    <div class="container">
+        <!-- Delivery Form -->
+        <div class="info-section">
+            <div class="info-title"><i class="fas fa-map-marker-alt"></i> ডেলিভারি ঠিকানা ও তথ্য দিন:</div>
+            
+            <div class="form-group">
+                <label for="customer-name">আপনার নাম:</label>
+                <input type="text" id="customer-name" placeholder="যেমন: আরিফ খান">
+            </div>
+            
+            <div class="form-group">
+                <label for="customer-phone">মোবাইল নম্বর:</label>
+                <input type="tel" id="customer-phone" placeholder="যেমন: 017XXXXXXXX">
+            </div>
+            
+            <div class="form-group">
+                <label for="customer-address">পূর্ণাঙ্গ ঠিকানা:</label>
+                <textarea id="customer-address" rows="3" placeholder="যেমন: বাসা নং ৪, রোড নং ২, মিরপুর, ঢাকা"></textarea>
+            </div>
+        </div>
+
+        <!-- Order Items Display -->
+        <div class="cart-section">
+            <div class="info-title"><i class="fas fa-list"></i> আইটেম বা পণ্যের নাম ও মূল্য</div>
+            
+            <!-- Search Bar -->
+            <input type="text" id="search-input" class="search-box" placeholder="🔍 পণ্য খুঁজুন...">
+
+            <!-- Container where products will load -->
+            <div id="cart-items-container"></div>
+
+            <div class="cart-summary">
+                <span>🛒 মোট কার্ট বিল:</span>
+                <span><span class="total-bill" id="total-bill-amount">0</span> টাকা</span>
+            </div>
+            
+            <a href="#" id="send-whatsapp-btn" class="whatsapp-btn">
+                <i class="fab fa-whatsapp" style="font-size: 20px;"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ২৫টি ডিফল্ট পণ্যের তালিকা
+        const defaultProducts = [
+            { name: "মিনিকেট চাল (৫ কেজি)", price: 350 },
+            { name: "সয়াবিন তেল (১ লিটার)", price: 165 },
+            { name: "নাজিরশাইল চাল (১ কেজি)", price: 85 },
+            { name: "মসুর ডাল (১ কেজি)", price: 140 },
+            { name: "চিনি (১ কেজি)", price: 135 },
+            { name: "আটা (২ কেজি)", price: 115 },
+            { name: "পেঁয়াজ (১ কেজি)", price: 90 },
+            { name: "রসুন (১ কেজি)", price: 220 },
+            { name: "আদা (১ কেজি)", price: 240 },
+            { name: "আলু (১ কেজি)", price: 55 },
+            { name: "লবণ (১ কেজি)", price: 42 },
+            { name: "হলুদ গুঁড়া (২০০ গ্রাম)", price: 80 },
+            { name: "মরিচ গুঁড়া (২০০ গ্রাম)", price: 95 },
+            { name: "সরিষার তেল (৫০০ মিলি)", price: 120 },
+            { name: "ডিম (১ ডজন)", price: 150 },
+            { name: "গুঁড়া দুধ (৫০০ গ্রাম)", price: 470 },
+            { name: "চা পাতা (৪০০ গ্রাম)", price: 160 },
+            { name: "ডিটারজেন্ট পাউডার (১ কেজি)", price: 140 },
+            { name: "গায়ে মাখার সাবান (১টি)", price: 60 },
+            { name: "ডিশওয়াশিং লিকুইড (২৫০ মিলি)", price: 75 },
+            { name: "টুথপেস্ট (২০০ গ্রাম)", price: 135 },
+            { name: "মুড়ি (৫০০ গ্রাম)", price: 50 },
+            { name: "খেজুরি গুড় (১ কেজি)", price: 180 },
+            { name: "পোলাও চাল (১ কেজি)", price: 150 },
+            { name: "ঘি (২৫০ গ্রাম)", price: 320 }
+        ];
+
+        // লোকালস্টোরেজ থেকে ডেটা নেওয়া বা প্রথমবার ডিফল্ট ডেটা সেট করা
+        let products = JSON.parse(localStorage.getItem('bazar_products'));
+        if (!products || products.length === 0) {
+            products = defaultProducts;
+            localStorage.setItem('bazar_products', JSON.stringify(defaultProducts));
+        }
+
+        const container = document.getElementById('cart-items-container');
+        let totalBill = 0;
+
+        // পণ্যগুলো পেজে রেন্ডার করা
+        function displayProducts(productsToRender) {
+            container.innerHTML = "";
+            totalBill = 0;
+            
+            if(productsToRender.length === 0) {
+                container.innerHTML = "<p style='color:red; text-align:center;'>দুঃখিত, এই নামের কোনো পণ্য খুঁজে পাওয়া যায়নি।</p>";
+                document.getElementById('total-bill-amount').innerText = 0;
+                return;
+            }
+
+            productsToRender.forEach((product) => {
+                totalBill += product.price;
+                const div = document.createElement('div');
+                div.className = 'product-item';
+                div.innerHTML = `
+                    <span class="product-name">${product.name}</span>
+                    <span class="product-price">${product.price} টাকা</span>
+                `;
+                container.appendChild(div);
+            });
+            document.getElementById('total-bill-amount').innerText = totalBill;
+        }
+
+        // পেজ লোড হলে সব পণ্য দেখাবে
+        displayProducts(products);
+
+        // লাইভ সার্চ ফিল্টার
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm));
+            displayProducts(filteredProducts);
+        });
+
+        // হোয়াটসঅ্যাপে অর্ডার পাঠানোর স্ক্রিপ্ট
+        document.getElementById('send-whatsapp-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const whatsappNumber = "8801749672230"; 
+
+            const name = document.getElementById('customer-name').value.trim() || 'দেওয়া হয়নি';
+            const phone = document.getElementById('customer-phone').value.trim() || 'দেওয়া হয়নি';
+            const address = document.getElementById('customer-address').value.trim() || 'দেওয়া হয়নি';
+            const currentTotal = document.getElementById('total-bill-amount').innerText;
+
+            let itemsText = "";
+            const visibleItems = container.querySelectorAll('.product-item');
+            visibleItems.forEach((item, index) => {
+                const pName = item.querySelector('.product-name').innerText;
+                const pPrice = item.querySelector('.product-price').innerText;
+                itemsText += `${index + 1}. ${pName} - ${pPrice}\n`;
+            });
+
+            if(itemsText === "") {
+                alert("আপনার তালিকায় কোনো পণ্য নেই!");
+                return;
+            }
+
+            let message = `🛒 *নতুন বাজার অর্ডার - Khan Bazar*\n\n`;
+            message += `👤 *কাস্টমারের নাম:* ${name}\n`;
+            message += `📱 *মোবাইল নম্বর:* ${phone}\n`;
+            message += `📍 *ঠিকানা:* ${address}\n\n`;
+            message += `📝 *পণ্যের তালিকা:*\n${itemsText}\n`;
+            message += `💰 *সর্বমোট বিল:* ${currentTotal} টাকা\n\n`;
+            message += `ধন্যবাদ!`;
+
+            window.open(`https://wa.me{whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        });
+    </script>
+</body>
+</html>
