@@ -3,107 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মাস্টার দাম ও ইনভেন্টরি কন্ট্রোল প্যানেল</title>
+    <title>আজকের লাইভ বাজার - নিয়ন্ত্রণ বোর্ড</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #eee; padding: 10px; margin: 0; }
-        .box { max-width: 550px; margin: 0 auto; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .product-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .product-name { width: 35%; font-size: 13px; text-align: left; font-weight: bold; color: #444; }
-        .product-row.hidden-item { background-color: #ffebee; opacity: 0.7; }
-        input { width: 16%; padding: 6px; border: 1px solid #ccc; border-radius: 5px; font-size: 13px; text-align: center; }
-        .btn-action { width: 22%; padding: 6px; font-size: 12px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; }
-        .btn-hide { background-color: #f44336; }
-        .btn-show { background-color: #4CAF50; }
-        button.main-save { background: #008CBA; color: white; padding: 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; position: fixed; bottom: 0; left: 0; border-radius: 0; z-index: 1000; }
-        .scroll-area { height: 75vh; overflow-y: scroll; padding-bottom: 60px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #eee;
+            padding: 10px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .box {
+            max-width: 550px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        .product-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            content: "";
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-name {
+            font-size: 15px;
+            font-weight: bold;
+            color: #444;
+            width: 35%;
+            text-align: left;
+        }
+        .input-item {
+            width: 16%;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .btn-hide {
+            width: 22%;
+            padding: 6px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f44336;
+            color: white;
+        }
+        .button.main-save {
+            background: #008CBA;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .scroll-area {
+            height: 70vh;
+            overflow-y: scroll;
+            padding-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h3 style="margin-top:0; color:#008CBA; text-align:center;">১০০ আইটেম মূল্য ও তালিকা নিয়ন্ত্রণ বোর্ড</h3>
-        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; color:#777; padding-bottom:5px; border-bottom:2px solid #ccc;">
-            <span style="width:35%; text-align:left;">আইটেম</span>
-            <span style="width:16%;">দাম</span>
-            <span style="width:16%;">ছাড়%</span>
-            <span style="width:22%; text-align:center;">অ্যাকশন</span>
-        </div>
-        <div class="scroll-area" id="admin-container"></div>
+
+<div class="box">
+    <h3 style="margin-top:0; color:#008CBA; text-align:center; margin-bottom: 15px;">🛒 লাইভ বাজার তালিকা নিয়ন্ত্রণ বোর্ড</h3>
+    
+    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; color:#777; padding-bottom:5px; border-bottom:2px solid #ccc; margin-bottom: 10px;">
+        <span style="width:35%; text-align:left;">আইটেম</span>
+        <span style="width:16%; text-align:center;">দাম</span>
+        <span style="width:16%; text-align:center;">ছাড়%</span>
+        <span style="width:22%; text-align:center;">অ্যাকশন</span>
     </div>
-    <button class="main-save" onclick="saveAllPrices()">সব পরিবর্তন একসাথে সেভ করুন</button>
-    <script>
-        const products = [
-            { id: "p1", name: "মিনিকেট চাল" }, { id: "p2", name: "নাজিরশাইল চাল" }, { id: "p3", name: "পোলাও চাল" },
-            { id: "p4", name: "মসুর ডাল (দেশী)" }, { id: "p5", name: "মসুর ডাল (মোটা)" }, { id: "p6", name: "মুগ ডাল" },
-            { id: "p7", name: "ছোলা ডাল" }, { id: "p8", name: "বুট ডাল" }, { id: "p9", name: "খেসারী ডাল" }, { id: "p10", name: "মাষকলাই ডাল" },
-            { id: "p11", name: "সয়াবিন তেল (১লি.)" }, { id: "p12", name: "সয়াবিন তেল (৫লি.)" }, { id: "p13", name: "সরিষার তেল" },
-            { id: "p14", name: "খাটি গাওয়া ঘি" }, { id: "p15", name: "অলিভ অয়েল" }, { id: "p16", name: "পাম অয়েল" },
-            { id: "p17", name: "নারকেল তেল" }, { id: "p18", name: "রাইস ব্র্যান অয়েল" }, { id: "p19", name: "ডালডা" }, { id: "p20", name: "সূর্যমুখী তেল" },
-            { id: "p21", name: "ইলিশ মাছ (বড়)" }, { id: "p22", name: "ইলিশ মাছ (মাঝারি)" }, { id: "p23", name: "গরুর মাংস" },
-            { id: "p24", name: "খাসির মাংস" }, { id: "p25", name: "ব্রয়লার মুরগি" }, { id: "p26", name: "সোনালী মুরগি" },
-            { id: "p27", name: "দেশী মুরগি" }, { id: "p28", name: "রুই মাছ" }, { id: "p29", name: "কাতল মাছ" },
-            { id: "p30", name: "চিংড়ি মাছ" }, { id: "p31", name: "পাঙাস মাছ" }, { id: "p32", name: "তেলাপিয়া মাছ" },
-            { id: "p33", name: "পাবদা মাছ" }, { id: "p34", name: "টেংরা মাছ" }, { id: "p35", name: "মাগুর মাছ" },
-            { id: "p36", name: "ফার্মের ডিম" }, { id: "p37", name: "হাঁসের ডিম" }, { id: "p38", name: "দেশী মুরগির ডিম" },
-            { id: "p39", name: "তরল দুধ" }, { id: "p40", name: "গুঁড়ো দুধ" }, { id: "p41", name: "মিষ্টি দই" },
-            { id: "p42", name: "টক দই" }, { id: "p43", name: "মাখন (Butter)" }, { id: "p44", name: "পনির (Cheese)" }, { id: "p45", name: "আইসক্রিম" },
-            { id: "p46", name: "আলু" }, { id: "p47", name: "দেশী পেঁয়াজ" }, { id: "p48", name: "আমদানী পেঁয়াজ" },
-            { id: "p49", name: "রসুন (দেশী)" }, { id: "p50", name: "রসুন (চায়না)" }, { id: "p51", name: "আদা" },
-            { id: "p52", name: "কাঁচামরিচ" }, { id: "p53", name: "টমেটো" }, { id: "p54", name: "বেগুন" },
-            { id: "p55", name: "ফুলকپی" }, { id: "p56", name: "বাধাকপি" }, { id: "p57", name: "পটল" },
-            { id: "p58", name: "ঝিংগা" }, { id: "p59", name: "করল্লা" }, { id: "p60", name: "লাউ" },
-            { id: "p61", name: "মিষ্টি কুমড়া" }, { id: "p62", name: "শসা" }, { id: "p63", name: "গাজর" },
-            { id: "p64", name: "লেবু" }, { id: "p65", name: "পেঁপে (কাঁচা)" }, { id: "p66", name: "লবন" },
-            { id: "p67", name: "চিনি (সাদা)" }, { id: "p68", name: "লাল চিনি" }, { id: "p69", name: "হলুদ গুঁড়ো" },
-            { id: "p70", name: "मরিচ গুঁড়ো" }, { id: "p71", name: "ধনে গুঁড়ো" }, { id: "p72", name: "জিরা" },
-            { id: "p73", name: "এলাচ" }, { id: "p74", name: "দারুচিনি" }, { id: "p75", name: "লবঙ্গ" },
-            { id: "p76", name: "সাগর কলা" }, { id: "p77", name: "আপেল" }, { id: "p78", name: "মাল্টা" },
-            { id: "p79", name: "কমলা" }, { id: "p80", name: "আঙুর" }, { id: "p81", name: "বেদানা" },
-            { id: "p82", name: "পেঁপে (পাকা)" }, { id: "p83", name: "তরমুজ" }, { id: "p84", name: "আনারস" }, { id: "p85", name: "পেয়ারা" },
-            { id: "p86", name: "চা পাতা" }, { id: "p87", name: "কফি" }, { id: "p88", name: "লেক্সাস বিস্কুট" },
-            { id: "p89", name: "এনার্জি বিস্কুট" }, { id: "p90", name: "চানাচুর" }, { id: "p91", name: "ম্যাগি নুডুলস" },
-            { id: "p92", name: "টমেটো সস" }, { id: "p93", name: "সুজি" }, { id: "p94", name: "আটা" },
-            { id: "p95", name: "ময়দা" }, { id: "p96", name: "সাবান" }, { id: "p97", name: "ডিটারজেন্ট পাউডার" },
-            { id: "p98", name: "ভিম লিকুইড" }, { id: "p99", name: "টুথপেস্ট" }, { id: "p100", name: "হারপিক" }
-        ];
-        function toggleItem(id) {
-            const currentStatus = localStorage.getItem(id + '_hidden') === 'true';
-            localStorage.setItem(id + '_hidden', !currentStatus);
-            loadAdminPanel();
+
+    <!-- এই ডিভ-এর ভেতরে সব পণ্য জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
+    <div class="scroll-area" id="admin-container"></div>
+
+    <!-- সব ডাটা একসাথে সেভ করার বাটন -->
+    <button class="button main-save" onclick="saveAllPrices()">সব পরিবর্তন একসাথে সেভ করুন</button>
+</div>
+
+<script>
+    // ডিলিট করে শর্টকাট করা প্রধান ২৫টি মুদি পণ্যের তালিকা
+    const products = [
+        { id: "p1", name: "মিনিকেট চাল" },
+        { id: "p2", name: "নাজিরশাইল চাল" },
+        { id: "p3", name: "পোলাও চাল" },
+        { id: "p4", name: "মসুর ডাল (দেশী)" },
+        { id: "p5", name: "মসুর ডাল (মোটা)" },
+        { id: "p6", name: "মুগ ডাল" },
+        { id: "p7", name: "ছোলা ডাল" },
+        { id: "p8", name: "সয়াবিন তেল (১ লিটার)" },
+        { id: "p9", name: "সয়াবিন তেল (৫ লিটার)" },
+        { id: "p10", name: "খাঁটি সরিষার তেল" },
+        { id: "p11", name: "দেশী পেঁয়াজ" },
+        { id: "p12", name: "রসুন" },
+        { id: "p13", name: "আদা" },
+        { id: "p14", name: "প্যাকেট চিনি" },
+        { id: "p15", name: "আয়োডিনযুক্ত লবণ" },
+        { id: "p16", name: "আটা (২ কেজি)" },
+        { id: "p17", name: "ময়দা (২ কেজি)" },
+        { id: "p18", name: "ফার্মের ডিম (ডজন)" },
+        { id: "p19", name: "গুঁড়ো দুধ (৫০০ গ্রাম)" },
+        { id: "p20", name: "চা পাতা" },
+        { id: "p21", name: "হলুদ গুঁড়ো" },
+        { id: "p22", name: "মরিচ গুঁড়ো" },
+        { id: "p23", name: "জিরা" },
+        { id: "p24", name: "ধনে গুঁড়ো" },
+        { id: "p25", name: "তেজপাতা ও গরম মসলা" }
+    ];
+
+    // পেজ লোড হওয়ার সাথে সাথে পণ্যগুলো স্ক্রিনে দেখানোর ফাংশন
+    function loadAdminPanel() {
+        const container = document.getElementById('admin-container');
+        let htmlContent = "";
+
+        products.forEach(product => {
+            // যদি কোনো আইটেম আগে থেকেই বাদ দেওয়া থাকে তবে তা স্ক্রিনে আসবে না
+            if (localStorage.getItem('hide-' + product.id) === 'true') {
+                return;
+            }
+
+            htmlContent += `
+            <div class="product-row" id="row-${product.id}">
+                <div class="product-name">${product.name}</div>
+                
+                <!-- দাম ইনপুট ফিল্ড -->
+                <input type="number" class="input-item" id="price-${product.id}" placeholder="দাম" 
+                       value="${localStorage.getItem('price-' + product.id) || ''}">
+                
+                <!-- ছাড়% ইনপুট ফিল্ড -->
+                <input type="number" class="input-item" id="discount-${product.id}" placeholder="%" 
+                       value="${localStorage.getItem('discount-' + product.id) || ''}">
+                
+                <!-- বাদ দিন বাটন -->
+                <button class="btn-hide" onclick="toggleItem('${product.id}')">বাদ দিন</button>
+            </div>
+            `;
+        });
+
+        container.innerHTML = htmlContent;
+    }
+
+    // তালিকা থেকে কোনো আইটেম সাময়িক বাদ দেওয়ার ফাংশন
+    function toggleItem(id) {
+        if (confirm("আপনি কি নিশ্চিতভাবে এই আইটেমটি তালিকা থেকে বাদ দিতে চান?")) {
+            localStorage.setItem('hide-' + id, 'true');
+            loadAdminPanel(); // তালিকা রিফ্রেশ করবে
         }
-        function loadAdminPanel() {
-            const container = document.getElementById('admin-container');
-            container.innerHTML = '';
-            products.forEach(p => {
-                const isHidden = localStorage.getItem(p.id + '_hidden') === 'true';
-                const row = document.createElement('div');
-                row.className = `product-row ${isHidden ? 'hidden-item' : ''}`;
-                const currentPrice = localStorage.getItem(p.id + '_price') || '';
-                const currentDiscount = localStorage.getItem(p.id + '_discount') || '';
-                row.innerHTML = `
-                    <div class="product-name">${p.name} ${isHidden ? '(বাদ দেওয়া)' : ''}</div>
-                    <input type="number" id="${p.id}_p" placeholder="দাম" value="${currentPrice}" ${isHidden ? 'disabled' : ''}>
-                    <input type="number" id="${p.id}_d" placeholder="%" value="${currentDiscount}" ${isHidden ? 'disabled' : ''}>
-                    <button class="btn-action ${isHidden ? 'btn-show' : 'btn-hide'}" onclick="toggleItem('${p.id}')">
-                        ${isHidden ? 'অন করুন' : 'বাদ দিন'}
-                    </button>
-                `;
-                container.appendChild(row);
-            });
-        }
-        function saveAllPrices() {
-            products.forEach(p => {
-                const priceInput = document.getElementById(p.id + '_p');
-                if(priceInput && !priceInput.disabled) {
-                    const priceVal = priceInput.value;
-                    const discountVal = document.getElementById(p.id + '_d').value;
-                    if(priceVal) localStorage.setItem(p.id + '_price', priceVal);
-                    if(discountVal) localStorage.setItem(p.id + '_discount', discountVal);
+    }
+
+    // "সব পরিবর্তন একসাথে সেভ করুন" বাটনে ক্লিক করলে ইনপুট করা সব দাম সেভ হবে
+    function saveAllPrices() {
+        products.forEach(product => {
+            if (localStorage.getItem('hide-' + product.id) !== 'true') {
+                const priceElement = document.getElementById(`price-${product.id}`);
+                const discountElement = document.getElementById(`discount-${product.id}`);
+                
+                if (priceElement && discountElement) {
+                    localStorage.setItem('price-' + product.id, priceElement.value);
+                    localStorage.setItem('discount-' + product.id, discountElement.value);
                 }
-            });
-            alert('ইনভেন্টরি ও বাজার দর সফলভাবে সেভ হয়েছে!');
-            window.location.href = 'index.html';
-        }
-        window.onload = loadAdminPanel;
-    </script>
+            }
+        });
+
+        alert("🎉 আপনার সব পরিবর্তন (দাম ও ছাড়) সফলভাবে সেভ করা হয়েছে!");
+    }
+
+    // পেজ রান হওয়ার সাথে সাথে ফাংশনটি চালু হবে
+    window.onload = function() {
+        loadAdminPanel();
+    };
+</script>
+
 </body>
 </html>
