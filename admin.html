@@ -1,0 +1,44 @@
+<script>
+// ডেমো হিসেবে ২৫টি বা তার বেশি পণ্যের একটি প্রাথমিক তালিকা
+const defaultProducts = [
+    { id: 1, name: "চাল (নাজিরশাইল)", price: 75 },
+    { id: 2, name: "মসুর ডাল", price: 130 },
+    { id: 3, name: "সয়াবিন তেল (১ লিটার)", price: 165 },
+    { id: 4, name: "আটা (২ কেজি)", price: 110 },
+    { id: 5, name: "পেঁয়াজ", price: 90 },
+    // এখানে আপনার বাকি পণ্যগুলো একইভাবে যুক্ত করতে পারবেন...
+];
+
+// যদি আগে থেকে কোনো পণ্য সেভ করা না থাকে, তবে ডেমো পণ্যগুলো সেট হবে
+if (!localStorage.getItem('bazarProducts')) {
+    localStorage.setItem('bazarProducts', JSON.stringify(defaultProducts));
+}
+
+// টেবিল বা ইনপুট ফিল্ডে পণ্যগুলো দেখানোর ফাংশন
+function loadAdminProducts() {
+    const products = JSON.parse(localStorage.getItem('bazarProducts'));
+    // এখানে আপনার HTML টেবিলের আইডি অনুযায়ী ডেটা বসানোর কোড লিখুন
+    // উদাহরণস্বরূপ: একটি লুপ চালিয়ে ইনপুট ফিল্ড জেনারেট করা
+}
+
+// "সব পরিবর্তন একসাথে সেভ করুন" বাটনে ক্লিক করলে যা হবে
+document.querySelector('.submit-order-btn').addEventListener('click', function() {
+    let updatedProducts = [];
+    
+    // আপনার অ্যাডমিন প্যানেলের প্রতি সারি (Row) থেকে ডেটা নেওয়া
+    // নিচে একটি ডেমো লজিক দেওয়া হলো, আপনার HTML স্ট্রাকচার অনুযায়ী এটি সামান্য বদলাতে পারে:
+    const rows = document.querySelectorAll('.product-row'); // আপনার রো-এর ক্লাস নাম দিন
+    rows.forEach((row, index) => {
+        const name = row.querySelector('.product-name-input').value;
+        const price = row.querySelector('.product-price-input').value;
+        updatedProducts.push({ id: index + 1, name: name, price: Number(price) });
+    });
+
+    // লোকাল স্টোরেজে নতুন তালিকা সেভ করা
+    localStorage.setItem('bazarProducts', JSON.stringify(updatedProducts));
+    alert('🛒 সব পণ্য সফলভাবে আপডেট ও সেভ হয়েছে!');
+});
+
+// পেজ লোড হলে পণ্যগুলো দেখাবে
+window.onload = loadAdminProducts;
+</script>
