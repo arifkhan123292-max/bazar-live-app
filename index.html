@@ -1,28 +1,150 @@
-<script>
-function displayLiveBazar() {
-    // অ্যাডমিন প্যানেল থেকে সেভ করা পণ্যগুলো নিয়ে আসা
-    const products = JSON.parse(localStorage.getItem('bazarProducts')) || [];
-    const container = document.getElementById('product-list-container'); // আপনার পণ্যের তালিকার মেইন ডিভ/টেবিল আইডি
-    
-    if(products.length === 0) {
-        container.innerHTML = "<p>কোনো পণ্য খুঁজে পাওয়া যায়নি।</p>";
-        return;
-    }
-    
-    container.innerHTML = ""; // আগের ডেমো ডেটা মুছে ফেলা
-    
-    // ২৫টি পণ্য লুপের মাধ্যমে পেজে ডাইনামিকালি বসানো
-    products.forEach(product => {
-        container.innerHTML += `
-            <div class="product-item">
-                <span>${product.name}</span>
-                <span>मूल्य: ${product.price} ৳</span>
-                <button class="add-cart-btn" onclick="addToCart(${product.id})">অ্যাড করুন</button>
-            </div>
-        `;
-    });
-}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Bazar - আজকের লাইভ বাজার তালিকা</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f9fa; color: #333; }
+        .header { background-color: #111; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header h1 { margin: 0; font-size: 20px; }
+        .star-icon { color: #2ecc71; font-size: 24px; }
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        h2 { font-size: 22px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }
+        .info-section { margin-bottom: 20px; }
+        .info-title { color: #e67e22; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 5px; font-size: 14px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        
+        /* Product Cart Section */
+        .cart-section { margin-top: 20px; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        .product-name { font-weight: bold; }
+        
+        .cart-summary { margin-top: 20px; padding: 15px; background-color: #2c3e50; color: white; border-radius: 8px; font-size: 16px; }
+        .total-bill { font-weight: bold; font-size: 18px; color: #2ecc71; }
+        
+        /* WhatsApp Button styling from your image context */
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 15px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .whatsapp-btn:hover { background-color: #27ae60; }
+    </style>
+</head>
+<body>
 
-// পেজ লোড হলেই লাইভ তালিকা দেখাবে
-window.onload = displayLiveBazar;
-</script>
+    <div class="header">
+        <h1>Khan Bazar</h1>
+        <div class="star-icon"><i class="fas fa-star"></i></div>
+    </div>
+
+    <div class="container">
+        <h2><i class="fas fa-shopping-basket"></i> আজকের লাইভ বাজার তালিকা</h2>
+        
+        <!-- Delivery Form -->
+        <div class="info-section">
+            <div class="info-title"><i class="fas fa-map-marker-alt"></i> ডেলিভারি ঠিকানা ও তথ্য দিন:</div>
+            
+            <div class="form-group">
+                <label for="customer-name">আপনার নাম:</label>
+                <input type="text" id="customer-name" placeholder="যেমন: আরিফ খান">
+            </div>
+            
+            <div class="form-group">
+                <label for="customer-phone">মোবাইল নম্বর:</label>
+                <input type="tel" id="customer-phone" placeholder="যেমন: 017XXXXXXXX">
+            </div>
+            
+            <div class="form-group">
+                <label for="customer-address">পূর্ণাঙ্গ ঠিকানা:</label>
+                <textarea id="customer-address" rows="3" placeholder="যেমন: বাসা নং ৪, রোড নং ২, মিরপুর, ঢাকা"></textarea>
+            </div>
+        </div>
+
+        <!-- Order Items Display -->
+        <div class="cart-section">
+            <div class="info-title"><i class="fas fa-list"></i> আইটেম বা পণ্যের নাম ও মূল্য</div>
+            
+            <!-- নমুনা পণ্য তালিকা (এটি আপনার ডাটাবেস বা লোকালস্টোরেজ থেকে ডায়নামিকালি আসবে) -->
+            <div id="cart-items-container">
+                <div class="product-item">
+                    <span class="product-name">মিনিকেট চাল (৫ কেজি)</span>
+                    <span class="product-price">৩৫০ টাকা</span>
+                </div>
+                <div class="product-item">
+                    <span class="product-name">সয়াবিন তেল (১ লিটার)</span>
+                    <span class="product-price">১৬5 টাকা</span>
+                </div>
+            </div>
+
+            <div class="cart-summary">
+                🛒 মোট কার্ট বিল: <span class="total-bill" id="total-bill-amount">৫১৫</span> টাকা
+            </div>
+            
+            <!-- WhatsApp Trigger Button -->
+            <a href="#" id="send-whatsapp-btn" class="whatsapp-btn">
+                <i class="fab fa-whatsapp" style="font-size: 20px;"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('send-whatsapp-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // আপনার নির্দিষ্ট হোয়াটসঅ্যাপ নম্বর (কান্ট্রি কোড সহ)
+            const whatsappNumber = "8801749672230"; 
+
+            // ইনপুট ফিল্ড থেকে ভ্যালু সংগ্রহ
+            const name = document.getElementById('customer-name').value.trim() || 'দেওয়া হয়নি';
+            const phone = document.getElementById('customer-phone').value.trim() || 'দেওয়া হয়নি';
+            const address = document.getElementById('customer-address').value.trim() || 'দেওয়া হয়নি';
+            const totalBill = document.getElementById('total-bill-amount').innerText;
+
+            // কার্টের আইটেমগুলো টেক্সট ফরম্যাটে রূপান্তর
+            let itemsText = "";
+            const items = document.querySelectorAll('.product-item');
+            items.forEach((item, index) => {
+                const pName = item.querySelector('.product-name').innerText;
+                const pPrice = item.querySelector('.product-price').innerText;
+                itemsText += `${index + 1}. ${pName} - ${pPrice}\n`;
+            });
+
+            if(itemsText === "") { itemsText = "কোনো পণ্য সিলেক্ট করা হয়নি\n"; }
+
+            // মেসেজ ফরম্যাটিং
+            let message = `🛒 *নতুন বাজার অর্ডার - Khan Bazar*\n\n`;
+            message += `👤 *কাস্টমারের নাম:* ${name}\n`;
+            message += `📱 *মোবাইল নম্বর:* ${phone}\n`;
+            message += `📍 *ঠিকানা:* ${address}\n\n`;
+            message += `📝 *পণ্যের তালিকা:*\n${itemsText}\n`;
+            message += `💰 *সর্বমোট বিল:* ${totalBill} টাকা\n\n`;
+            message += `সব ঠিক থাকলে দয়া করে অর্ডারটি কনফার্ম করুন। ধন্যবাদ!`;
+
+            // ইউআরএল এনকোড করে হোয়াটসঅ্যাপ ওপেন করা
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me{whatsappNumber}?text=${encodedMessage}`;
+            
+            window.open(whatsappURL, '_blank');
+        });
+    </script>
+</body>
+</html>
