@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Bazar - অফার কন্ট্রোল প্যানেল</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: #f1f5f9; padding: 10px; }
+        .header { background: #1e293b; color: white; text-align: center; padding: 20px; border-radius: 8px; margin-bottom: 15px; }
+        .header h1 { font-size: 20px; margin-bottom: 5px; }
+        .header a { color: #38bdf8; text-decoration: none; font-size: 13px; }
+        .panel-title { background: #e2e8f0; padding: 10px; border-radius: 5px; font-weight: bold; font-size: 14px; margin-bottom: 10px; color: #334155; }
+        
+        .table-container { background: white; border-radius: 8px; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 12px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #334155; color: white; }
+        
+        input[type="number"], input[type="text"] { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; }
+        .offer-price-view { color: #10b981; font-weight: bold; }
+        
+        .global-save-btn { background: #10b981; color: white; border: none; width: 100%; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
+        .global-save-btn:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Khan Bazar - অফার কন্ট্রোল প্যানেল</h1>
+        <a href="index.html">🛒 কাস্টমার পেজে যান</a>
+    </div>
+
+    <div class="panel-title">ম্যানেজ ও লাইভ এডিট প্যানেল</div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 35%;">পণ্যের নাম</th>
+                    <th style="width: 15%;">আসল দাম (৳)</th>
+                    <th style="width: 12%;">ছাড় (%)</th>
+                    <th style="width: 23%;">ছবির লিংক (URL)</th>
+                    <th style="width: 15%;">অফার মূল্য</th>
+                </tr>
+            </thead>
+            <tbody id="admin-table-body">
+                <!-- ২৫টি পণ্য জাভাস্ক্রিপ্ট দিয়ে জেনারেট হবে -->
+            </tbody>
+        </table>
+    </div>
+
+    <button class="global-save-btn" onclick="saveAllToLive()">⚡ তালিকায় নতুন পণ্য ও লাইভ আপডেট সাবমিট করুন</button>
+
+    <script>
+        // আপনার স্ক্রিনশটের ২৫টি আইটেমের নিখুঁত তালিকা
+        let defaultItems = [
+            "মিনিকেট চাল (৫ কেজি)", "সয়াবিন তেল (১ লিটার)", "নাজিরশাইল চাল (১ কেজি)", "মসুর ডাল (১ কেজি)", 
+            "চিনি (১ কেজি)", "আটা (২ কেজি)", "পেঁয়াজ (১ কেজি)", "রসুন (১ কেজি)", "আদা (১ কেজি)", 
+            "আলু (১ কেজি)", "লবণ (১ কেজি)", "হলুদ গুঁড়া (২০০ গ্রাম)", "মরিচ গুঁড়া (২০০ গ্রাম)", 
+            "সরিষার তেল (৫০০ মিলি)", "ডিম (১ ডজন)", "গুঁড়া দুধ (৫০০ গ্রাম)", "চা পাতা (৪০০ গ্রাম)", 
+            "ডিটারজেন্ট পাউডার (১ কেজি)", "গায়ে মাখার সাবান (১টি)", "ডিশওয়াশিং লিকুইড (২৫০ মিলি)", 
+            "টুথপেস্ট (২০০ গ্রাম)", "মুড়ি (৫০০ গ্রাম)", "খেজুরি গুড় (১ কেজি)", "পোলাও চাল (১ কেজি)", "ঘি (২৫০ গ্রাম)"
+        ];
+
+        // লোড করা বা ইনিশিয়াল ডেটা স্ট্রাকচার তৈরি
+        let savedData = localStorage.getItem('khanBazarLiveStorage');
+        let products = [];
+
+        if (savedData) {
+            products = JSON.parse(savedData);
+        } else {
+            // ডাটাবেজ খালি থাকলে ২৫টি আইটেমের ডিফল্ট অবজেক্ট তৈরি
+            products = defaultItems.map((name, index) => ({
+                id: index + 1,
+                name: name,
+                price: 0,
+                discount: 0,
+                image: "",
+                offerPrice: 0
+            }));
+        }
+
+        // টেবিলে ডেটা রেন্ডার করা
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = '';
+
+            products.forEach((product, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${product.name}</strong></td>
+                        <td><input type="number" value="${product.price}" oninput="calculateOfferPrice(${idx}, this.value, 'price')"></td>
+                        <td><input type="number" value="${product.discount}" oninput="calculateOfferPrice(${idx}, this.value, 'discount')"></td>
+                        <td><input type="text" value="${product.image}" placeholder="https://..." oninput="updateImage(${idx}, this.value)"></td>
+                        <td><span class="offer-price-view" id="offer-view-${idx}">৳${product.offerPrice}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ইনস্ট্যান্ট অফার প্রাইস হিসাব করার লজিক
+        window.calculateOfferPrice = function(index, value, type) {
+            if(type === 'price') products[index].price = Number(value) || 0;
+            if(type === 'discount') products[index].discount = Number(value) || 0;
+
+            // ডিসকাউন্টের ম্যাথ লজিক
+            let price = products[index].price;
+            let discount = products[index].discount;
+            let finalPrice = price - Math.round((price * discount) / 100);
+            
+            products[index].offerPrice = finalPrice;
+            document.getElementById(`offer-view-${index}`).innerText = `৳${finalPrice}`;
+        }
+
+        window.updateImage = function(index, value) {
+            products[index].image = value;
+        }
+
+        // লাইভ সেভ করার মেকানিজম
+        window.saveAllToLive = function() {
+            localStorage.setItem('khanBazarLiveStorage', JSON.stringify(products));
+            alert("✅ অভিনন্দন! এডমিন প্যানেলের সব আইটেমের তথ্য কাস্টমার পেজের জন্য লাইভ আপডেট করা হয়েছে।");
+        }
+
+        window.onload = renderAdminTable;
+    </script>
+</body>
+</html>
