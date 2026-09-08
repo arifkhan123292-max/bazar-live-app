@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খান বাজার - অনলাইন মুদি দোকান</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding: 15px; }
+        .header { background: #1e293b; color: white; text-align: center; padding: 25px; border-radius: 10px; margin-bottom: 20px; position: relative; }
+        .header h1 { font-size: 24px; margin-bottom: 10px; }
+        .header a { color: #38bdf8; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed #ddd; padding-bottom: 8px; }
+        
+        /* প্রোডাক্ট গ্রিড স্টাইল */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .product-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .product-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 6px; background: #eee; }
+        .product-card h4 { font-size: 13px; margin: 8px 0 4px 0; height: 36px; overflow: hidden; }
+        .product-card .old-price { font-size: 11px; color: #94a3b8; text-decoration: line-through; }
+        .product-card .discount { font-size: 11px; color: #ef4444; font-weight: bold; margin-left: 4px; }
+        .product-card .offer-price { font-size: 14px; color: #10b981; font-weight: bold; margin: 4px 0; }
+        .product-card button { background: #10b981; color: white; border: none; width: 100%; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .product-card button:hover { background: #059669; }
+
+        /* কার্ট ও ফর্ম স্টাইল */
+        .cart-status { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; font-size: 14px; color: #64748b; margin-bottom: 15px; }
+        .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .total-bill { background: #ecfdf5; border-left: 5px solid #10b981; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; color: #065f46; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 6px; color: #475569; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        .form-group input:focus { border-color: #3b82f6; }
+        .submit-btn { background: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .submit-btn:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>খান বাজার - অনলাইন মুদি দোকান</h1>
+        <a href="admin.html">⚙ অফার কন্ট্রোল প্যানেল যান</a>
+    </div>
+
+    <div class="container">
+        <!-- ডাইনামিক অফার প্রোডাক্ট এখানে শো করবে -->
+        <h2>🛍️ আজকের বিশেষ অফারসমূহ</h2>
+        <div class="product-grid" id="customer-products">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে পণ্য লোড হবে -->
+        </div>
+
+        <h2>🛒 আপনার ব্যাগ</h2>
+        <div id="cart-container" class="cart-status">ব্যাগ খালি আছে</div>
+        
+        <div class="total-bill">
+            সর্বমোট অফার বিল: ৳ <span id="total-amount">0</span>
+        </div>
+
+        <h2>🚚 Delivery Information</h2>
+        <form id="order-form" onsubmit="placeOrder(event)">
+            <div class="form-group">
+                <label>আপনার নাম:</label>
+                <input type="text" id="cust-name" placeholder="আপনার নাম লিখুন" required>
+            </div>
+            <div class="form-group">
+                <label>মোবাইল নম্বর:</label>
+                <input type="tel" id="cust-phone" placeholder="017XXXXXXXX" required>
+            </div>
+            <div class="form-group">
+                <label>পূর্ণাঙ্গ ঠিকানা:</label>
+                <textarea id="cust-address" rows="3" placeholder="গ্রাম/রোড, থানা, জেলা লিখুন" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>পেইমেন্ট মাধ্যম সিলেক্ট করুন:</label>
+                <select id="payment-method" required>
+                    <option value="ক্যাশ অন ডেলিভারি">ক্যাশ অন ডেলিভারি</option>
+                    <option value="বিকাশ">বিকাশ</option>
+                    <option value="নগদ">নগদ</option>
+                </select>
+            </div>
+            <button type="submit" class="submit-btn">🟢 হোয়াটসঅ্যাপে অফারটি লুফে নিন</button>
+        </form>
+    </div>
+
+    <script>
+        // এডমিন প্যানেল থেকে ডেটা রিড করা
+        let savedData = localStorage.getItem('khanBazarLiveStorage');
+        let products = savedData ? JSON.parse(savedData) : [];
+        let cart = [];
+
+        // কাস্টমার স্ক্রিনে লাইভ আইটেম প্রদর্শন
+        function loadCustomerPage() {
+            const grid = document.getElementById('customer-products');
+            grid.innerHTML = '';
+            
+            // শুধুমাত্র যেসব পণ্যের দাম ০ এর বেশি এবং এডমিন সেট করেছে সেগুলো দেখাবে
+            let activeProducts = products.filter(p => p.price > 0);
+
+            if(activeProducts.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; color:#94a3b8; text-align:center; padding:10px;">বর্তমানে কোনো লাইভ অফার নেই।</p>';
+                return;
+            }
+
+            activeProducts.forEach(product => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.image || 'https://placeholder.com'}" alt="${product.name}">
+                        <h4>${product.name}</h4>
+                        <div class="old-price">৳${product.price}</div>
+                        <div class="discount">${product.discount}% ছাড়</div>
+                        <div class="offer-price">৳${product.offerPrice}</div>
+                        <button onclick="addToBag(${product.id})">যোগ করুন</button>
+                    </div>
+                `;
+            });
+        }
+
+        // ব্যাগে পণ্য যোগ করার লজিক
+        function addToBag(id) {
+            let item = products.find(p => p.id === id);
+            if (!item) return;
+
+            let cartItem = cart.find(c => c.id === id);
+            if (cartItem) {
+                cartItem.qty += 1;
+            } else {
+                cart.push({ id: item.id, name: item.name, price: item.offerPrice, qty: 1 });
+            }
+            updateCartUI();
+        }
+
+        // কার্ট ইন্টারফেস আপডেট
+        function updateCartUI() {
+            const container = document.getElementById('cart-container');
+            const totalSpan = document.getElementById('total-amount');
+            
+            if(cart.length === 0) {
+                container.className = "cart-status";
+                container.innerHTML = "ব্যাগ খালি আছে";
+                totalSpan.innerText = "0";
+                return;
+            }
+
+            container.className = ""; 
+            container.innerHTML = "";
+            let total = 0;
+
+            cart.forEach(item => {
+                total += (item.price * item.qty);
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name} (x${item.qty})</span>
+                        <strong>৳${item.price * item.qty}</strong>
+                    </div>
+                `;
+            });
+            totalSpan.innerText = total;
+        }
+
+        // হোয়াটসঅ্যাপে অর্ডার সাবমিট করা
+        function placeOrder(e) {
+            e.preventDefault();
+            if(cart.length === 0) {
+                alert("আপনার ব্যাগ খালি! আগে পণ্য যোগ করুন।");
+                return;
+            }
+
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            let address = document.getElementById('cust-address').value;
+            let payment = document.getElementById('payment-method').value;
+            let totalBill = document.getElementById('total-amount').innerText;
+
+            let itemDetails = cart.map(c => `${c.name} - ${c.qty}টি - ৳${c.price * c.qty}`).join('\n');
+            
+            let message = `*নতুন অফার অর্ডার - খান বাজার*\n\n`;
+            message += `*কাস্টমার নাম:* ${name}\n`;
+            message += `*মোবাইল:* ${phone}\n`;
+            message += `*ঠিকানা:* ${address}\n`;
+            message += `*পেমেন্ট মেথড:* ${payment}\n\n`;
+            message += `*অর্ডার করা আইটেমসমূহ:*\n${itemDetails}\n\n`;
+            message += `*সর্বমোট বিল:* ৳${totalBill}`;
+
+            let whatsappUrl = `https://wa.me{encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        window.onload = loadCustomerPage;
+    </script>
+</body>
+</html>
