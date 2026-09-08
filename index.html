@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খান বাজার - অনলাইন মুদি দোকান</title>
+    <style>
+        /* আপনার স্ক্রিনশটের লেআউট অনুযায়ী স্টাইল */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 15px;
+            direction: ltr;
+        }
+        .order-container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .cart-status {
+            border: 1px dashed #cccccc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+        .bill-box {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .whatsapp-btn {
+            background-color: #007bff; /* আপনার ৩নং ছবির নীল বাটন কালার */
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+        .whatsapp-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="order-container">
+    <!-- আপনার ব্যাগ সেকশন -->
+    <div class="section-title">🛒 আপনার ব্যাগ</div>
+    <div id="cart-status-box" class="cart-status">ব্যাগ খালি আছে</div>
+    
+    <!-- সর্বমোট বিল -->
+    <div class="bill-box">
+        সর্বমোট অফার বিল: ৳ <span id="total-bill-amount">0</span>
+    </div>
+
+    <!-- ডেলিভারি ইনফরমেশন ফর্ম -->
+    <div class="section-title">🚚 Delivery Information</div>
+    
+    <div class="form-group">
+        <label for="cus-name">আপনার নাম:</label>
+        <input type="text" id="cus-name" placeholder="আপনার নাম লিখুন">
+    </div>
+
+    <div class="form-group">
+        <label for="cus-phone">মোবাইল নম্বর:</label>
+        <input type="text" id="cus-phone" placeholder="017XXXXXXXX">
+    </div>
+
+    <div class="form-group">
+        <label for="cus-address">পূর্ণাঙ্গ ঠিকানা:</label>
+        <textarea id="cus-address" rows="3" placeholder="গ্রাম/রোড, থানা, জেলা লিখুন"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="payment-method">পেইমেন্ট মাধ্যম সিলেক্ট করুন:</label>
+        <select id="payment-method">
+            <option value="ক্যাশ অন ডেলিভারি">ক্যাশ অন ডেলিভারি</option>
+            <option value="বিকাশ">বিকাশ</option>
+            <option value="নগদ">নগদ</option>
+        </select>
+    </div>
+
+    <!-- হোয়াটসঅ্যাপ বাটন -->
+    <button type="button" class="whatsapp-btn" onclick="sendOrderToWhatsApp()">
+        🟢 হোয়াটসঅ্যাপে অফারটি লুফে নিন
+    </button>
+</div>
+
+<script>
+    // প্রোজেক্ট লোড হওয়ার সময় কার্ট চেক করে বিল আপডেট করার ফাংশন
+    function updateOrderSummary() {
+        // আপনার প্রোজেক্টের লোকাল স্টোরেজের নাম অনুযায়ী (যেমন: 'cart' বা 'cartItems') ডেটা আনবে
+        let cart = JSON.parse(localStorage.getItem('cartItems')) || JSON.parse(localStorage.getItem('cart')) || [];
+        
+        let totalBill = 0;
+        let statusBox = document.getElementById('cart-status-box');
+        let billSpan = document.getElementById('total-bill-amount');
+
+        if(cart.length > 0) {
+            statusBox.innerHTML = `ব্যাগে মোট <b>${cart.length}</b> টি পণ্য আছে।`;
+            
+            cart.forEach(item => {
+                // অবজেক্টের সম্ভাব্য ভিন্ন ভিন্ন নাম হ্যান্ডেল করার জন্য
+                let price = parseFloat(item.offerPrice) || parseFloat(item.price) || 0;
+                let qty = parseInt(item.quantity) || 1;
+                totalBill += (price * qty);
+            });
+        } else {
+            statusBox.innerText = "ব্যাগ খালি আছে";
+        }
+        
+        billSpan.innerText = totalBill;
+    }
+
+    // হোয়াটসঅ্যাপে ডেটা পাঠানোর মূল ফাংশন
+    function sendOrderToWhatsApp() {
+        // আপনার সঠিক হোয়াটসঅ্যাপ নাম্বার (কান্ট্রি কোড সহ ৮৮ যোগ করা হয়েছে)
+        const targetWhatsAppNumber = "8801749672230"; 
+
+        // লোকাল স্টোরেজ থেকে পণ্য নিয়ে আসা
+        let cart = JSON.parse(localStorage.getItem('cartItems')) || JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (cart.length === 0) {
+            alert("আপনার ব্যাগ তো খালি! আগে পণ্য যোগ করুন।");
+            return;
+        }
+
+        // ফর্মের ইনপুট ভ্যালু নেওয়া
+        const name = document.getElementById('cus-name').value.trim();
+        const phone = document.getElementById('cus-phone').value.trim();
+        const address = document.getElementById('cus-address').value.trim();
+        const payment = document.getElementById('payment-method').value;
+
+        // ইনপুট ভ্যালিডেশন 
+        if (!name || !phone || !address) {
+            alert("অনুগ্রহ করে Delivery Information এর সব ঘর পূরণ করুন।");
+            return;
+        }
+
+        // হোয়াটসঅ্যাপ মেসেজের চমৎকার টেক্সট ফরম্যাট তৈরি করা
+        let messageText = `*নতুন অর্ডার (খান বাজার)*\n\n`;
+        messageText += `👤 *নাম:* ${name}\n`;
+        messageText += `📞 *মোবাইল:* ${phone}\n`;
+        messageText += `📍 *ঠিকানা:* ${address}\n`;
+        messageText += `💳 *পেইমেন্ট:* ${payment}\n\n`;
+        messageText += `🛒 *অর্ডার করা পণ্যসমূহ:*\n`;
+
+        let finalTotal = 0;
+
+        cart.forEach((item, index) => {
+            let pName = item.name || item.productName || "পণ্য";
+            let pPrice = parseFloat(item.offerPrice) || parseFloat(item.price) || 0;
+            let pQty = parseInt(item.quantity) || 1;
+            let subTotal = pPrice * pQty;
+
+            messageText += `${index + 1}. ${pName} - (${pQty}x) = ৳${subTotal}\n`;
+            finalTotal += subTotal;
+        });
+
+        messageText += `\n💰 *সর্বমোট অফার বিল: ৳${finalTotal}*`;
+
+        // ইউআরএল এনকোড করা যাতে মেসেজটি লিংক আকারে ব্রাউজার চেনে
+        const finalEncodedText = encodeURIComponent(messageText);
+
+        // ফাইনাল হোয়াটসঅ্যাপ এপিআই লিংক
+        const whatsAppApiUrl = `https://whatsapp.com{targetWhatsAppNumber}&text=${finalEncodedText}`;
+
+        // নতুন উইন্ডোতে হোয়াটসঅ্যাপ ওপেন হবে
+        window.open(whatsAppApiUrl, '_blank');
+    }
+
+    // পেজটি ওপেন হলেই যেন বিল ক্যালকুলেট হয়ে যায়
+    window.onload = updateOrderSummary;
+</script>
+
+</body>
+</html>
