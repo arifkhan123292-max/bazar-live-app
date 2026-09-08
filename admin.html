@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khan Bazar - Admin Offers</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background-color: #f1f2f6; }
+        .navbar { background-color: #2c3e50; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .main-container { max-width: 850px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .form-section { background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ddd; }
+        .grid-three { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .full-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; margin-bottom: 10px; }
+        .btn-add { background-color: #2ecc71; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        .btn-delete-all { background-color: #c0392b; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+        .product-table { width: 100%; border-collapse: collapse; }
+        .product-table th, .product-table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
+        .product-table th { background-color: #34495e; color: white; }
+        .action-btn { border: none; padding: 4px 8px; cursor: pointer; border-radius: 4px; color: white; font-size: 12px; margin-right: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h1>Khan Bazar - à¦…à¦«à¦¾à¦° à¦•à¦¨à§à¦Ÿà§à¦°à§‹à¦² à¦ªà§à¦¯à¦¾à¦¨à§‡à¦²</h1>
+        <span>à¦†à¦‡à¦Ÿà§‡à¦® à¦¸à¦‚à¦–à§à¦¯à¦¾: <span id="product-count">0</span>à¦Ÿà¦¿</span>
+    </div>
+
+    <div class="main-container">
+        <div class="form-section">
+            <h3><i class="fas fa-tags"></i> à¦¨à¦¤à§à¦¨ à¦…à¦«à¦¾à¦° à¦ªà¦£à§à¦¯ à¦¯à§‹à¦— à¦•à¦°à§à¦¨</h3>
+            <div class="grid-three">
+                <input type="text" id="admin-pname" placeholder="à¦ªà¦£à§à¦¯à§‡à¦° à¦¨à¦¾à¦® (à¦®à¦¿à¦¨à¦¿à¦•à§‡à¦Ÿ à¦šà¦¾à¦²)">
+                <input type="number" id="admin-pprice" placeholder="à¦†à¦¸à¦² à¦¦à¦¾à¦® (à§³)">
+                <input type="number" id="admin-pdiscount" placeholder="à¦›à¦¾à§œ % (à¦¯à§‡à¦®à¦¨: 10)" min="0" max="99">
+            </div>
+            <input type="text" id="admin-pimg" class="full-input" placeholder="à¦ªà¦£à§à¦¯à§‡à¦° à¦›à¦¬à¦¿à¦° à¦¡à¦¿à¦°à§‡à¦•à§à¦Ÿ à¦…à¦¨à¦²à¦¾à¦‡à¦¨ à¦²à¦¿à¦™à§à¦• (URL)">
+            <button class="btn-add" id="add-product-btn">à¦¤à¦¾à¦²à¦¿à¦•à¦¾à¦¯à¦¼ à¦¨à¦¤à§à¦¨ à¦ªà¦£à§à¦¯ à¦¯à§à¦•à§à¦¤ à¦•à¦°à§à¦¨</button>
+        </div>
+
+        <button class="btn-delete-all" onclick="deleteSelectedProducts()">à¦¸à¦¿à¦²à§‡à¦•à§à¦Ÿ à¦•à¦°à¦¾ à¦¸à¦¬ à¦®à§à¦›à§à¦¨</button>
+
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th width="5%"><input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"></th>
+                    <th>à¦›à¦¬à¦¿</th>
+                    <th>à¦ªà¦£à§à¦¯à§‡à¦° à¦¨à¦¾à¦®</th>
+                    <th>à¦†à¦¸à¦² à¦¦à¦¾à¦®</th>
+                    <th>à¦›à¦¾à§œ (%)</th>
+                    <th>à¦…à¦«à¦¾à¦° à¦®à§‚à¦²à§à¦¯</th>
+                    <th>à¦…à§à¦¯à¦¾à¦•à¦¶à¦¨</th>
+                </tr>
+            </thead>
+            <tbody id="admin-product-list"></tbody>
+        </table>
+    </div>
+
+<script>
+const defaultProducts = [
+    { id: 1, name: "à¦®à¦¿à¦¨à¦¿à¦•à§‡à¦Ÿ à¦šà¦¾à¦² (à§« à¦•à§‡à¦œà¦¿)", price: 350, discount: 10, img: "https://unsplash.com" },
+    { id: 2, name: "à¦¸à§Ÿà¦¾à¦¬à¦¿à¦¨ à¦¤à§‡à¦² (à§§ à¦²à¦¿à¦Ÿà¦¾à¦°)", price: 165, discount: 5, img: "https://unsplash.com" }
+];
+
+let products = JSON.parse(localStorage.getItem('khanBazarProducts')) || defaultProducts;
+const productListBody = document.getElementById('admin-product-list');
+const productCountSpan = document.getElementById('product-count');
+
+function displayProducts() {
+    productListBody.innerHTML = "";
+    productCountSpan.innerText = products.length;
+
+    products.forEach((product, index) => {
+        let disc = product.discount || 0;
+        let finalPrice = Math.round(product.price - (product.price * (disc / 100)));
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="checkbox" class="product-checkbox" data-index="${index}"></td>
+            <td><img src="${product.img}" width="40" height="40" style="object-fit:cover; border-radius:4px;" onerror="this.src='https://unsplash.com'"></td>
+            <td>${product.name}</td>
+            <td>à§³ ${product.price}</td>
+            <td>${disc}%</td>
+            <td style="color:#e74c3c; font-weight:bold;">à§³ ${finalPrice}</td>
+            <td>
+                <button class="action-btn" style="background:#3498db;" onclick="editProduct(${index})">à¦¬à¦¦à¦²à¦¾à¦¨</button>
+                <button class="action-btn" style="background:#e74c3c;" onclick="deleteSingleProduct(${index})">à¦®à§à¦›à§à¦¨</button>
+            </td>
+        `;
+        productListBody.appendChild(row);
+    });
+    localStorage.setItem('khanBazarProducts', JSON.stringify(products));
+}
+
+function toggleSelectAll(masterCheckbox) {
+    document.querySelectorAll('.product-checkbox').forEach(cb => cb.checked = masterCheckbox.checked);
+}
+
+function editProduct(index) {
+    const newPrice = prompt(`"${products[index].name}" à¦à¦° à¦¨à¦¤à§à¦¨ à¦†à¦¸à¦² à¦¦à¦¾à¦® à¦²à¦¿à¦–à§à¦¨:`, products[index].price);
+    if(newPrice === null) return;
+    
+    const newDisc = prompt(`"${products[index].name}" à¦à¦° à¦¨à¦¤à§à¦¨ à¦›à¦¾à§œà§‡à¦° à¦ªà¦¾à¦°à§à¦¸à§‡à¦¨à§à¦Ÿ (%) à¦²à¦¿à¦–à§à¦¨:`, products[index].discount || 0);
+    if(newDisc === null) return;
+
+    if(!isNaN(parseInt(newPrice)) && !isNaN(parseInt(newDisc))) {
+        products[index].price = parseInt(newPrice);
+        products[index].discount = parseInt(newDisc);
+        displayProducts();
+        alert("à¦…à¦«à¦¾à¦° à¦“ à¦¦à¦¾à¦® à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦†à¦ªà¦¡à§‡à¦Ÿ à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡!");
+    }
+}
+
+function deleteSingleProduct(index) {
+    if(confirm("à¦ªà¦£à§à¦¯à¦Ÿà¦¿ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¤à§‡ à¦šà¦¾à¦¨?")) {
+        products.splice(index, 1);
+        displayProducts();
+    }
+}
+
+function deleteSelectedProducts() {
+    const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+    if(checkboxes.length === 0) return alert("à¦ªà§à¦°à¦¥à¦®à§‡ à¦ªà¦£à§à¦¯ à¦¸à¦¿à¦²à§‡à¦•à§à¦Ÿ à¦•à¦°à§à¦¨!");
+    
+    if(confirm("à¦¸à¦¿à¦²à§‡à¦•à§à¦Ÿ à¦•à¦°à¦¾ à¦¸à¦¬ à¦ªà¦£à§à¦¯ à¦®à§à¦›à¦¤à§‡ à¦šà¦¾à¦¨?")) {
+        const indices = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index'))).sort((a,b)=>b-a);
+        indices.forEach(i => products.splice(i, 1));
+        document.getElementById('selectAllCheckbox').checked = false;
+        displayProducts();
+    }
+}
+
+document.getElementById('add-product-btn').addEventListener('click', function() {
+    const name = document.getElementById('admin-pname').value;
+    const price = document.getElementById('admin-pprice').value;
+    const discount = document.getElementById('admin-pdiscount').value || 0;
+    const img = document.getElementById('admin-pimg').value || "https://unsplash.com";
+
+    if(!name || !price) return alert("à¦¨à¦¾à¦® à¦“ à¦¦à¦¾à¦® à¦¸à¦ à¦¿à¦•à¦­à¦¾à¦¬à§‡ à¦¦à¦¿à¦¨!");
+
+    products.push({ id: Date.now(), name: name, price: parseInt(price), discount: parseInt(discount), img: img });
+    displayProducts();
+    
+    document.getElementById('admin-pname').value = "";
+    document.getElementById('admin-pprice').value = "";
+    document.getElementById('admin-pdiscount').value = "";
+    document.getElementById('admin-pimg').value = "";
+});
+
+window.onload = displayProducts;
+</script>
+</body>
+</html>
