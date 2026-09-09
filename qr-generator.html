@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR কোড জেনারেটর - খান সুপার শপ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .qr-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .preset-urls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .preset-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-download {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #20BA5A;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        .size-control {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .size-control input {
+            width: 100px;
+        }
+
+        .size-control span {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .preview-text {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            border: 1px solid #c3e6cb;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .share-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        .share-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .share-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .share-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .share-whatsapp:hover {
+            background: #20BA5A;
+        }
+
+        .share-facebook {
+            background: #3b5998;
+            color: white;
+        }
+
+        .share-facebook:hover {
+            background: #2d4373;
+        }
+
+        .share-copy {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .share-copy:hover {
+            background: #c0392b;
+        }
+
+        .share-print {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .share-print:hover {
+            background: #7f8c8d;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .preset-urls {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .share-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .button-group, .share-section, .input-group {
+                display: none;
+            }
+
+            #qrcode {
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📱 QR কোড জেনারেটর</h1>
+        <p>খান সুপার শপের জন্য QR কোড তৈরি করুন</p>
+    </div>
+
+    <div class="input-group">
+        <label>📌 প্রি-সেট URL বেছে নিন:</label>
+        <div class="preset-urls">
+            <button class="preset-btn active" onclick="setPresetUrl('homepage')">🏠 হোমপেজ</button>
+            <button class="preset-btn" onclick="setPresetUrl('admin')">🔧 অ্যাডমিন</button>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>🔗 কাস্টম URL:</label>
+        <input type="text" id="urlInput" placeholder="https://example.com" value="https://arifkhan123292-max.github.io/bazar-live-app/">
+        <div class="preview-text" id="previewText">https://arifkhan123292-max.github.io/bazar-live-app/</div>
+    </div>
+
+    <div class="input-group">
+        <label>📏 QR কোডের সাইজ:</label>
+        <div class="size-control">
+            <input type="number" id="sizeInput" value="300" min="100" max="800">
+            <span>পিক্সেল</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>🎨 ডার্ক রং:</label>
+        <input type="color" id="darkColor" value="#000000">
+    </div>
+
+    <div class="input-group">
+        <label>⚪ হালকা রং:</label>
+        <input type="color" id="lightColor" value="#FFFFFF">
+    </div>
+
+    <div class="qr-section">
+        <h3 style="color: #667eea; margin-bottom: 15px;">✨ আপনার QR কোড:</h3>
+        <div id="qrcode"></div>
+    </div>
+
+    <div class="info-box">
+        <strong>💡 টিপস:</strong> এই QR কোড স্ক্যান করলে সরাসরি আপনার শপে যাবে। প্রিন্ট করুন, পোস্টার বানান বা সোশ্যাল মিডিয়ায় শেয়ার করুন!
+    </div>
+
+    <div class="button-group">
+        <button class="btn-generate" onclick="generateQR()">🔄 QR তৈরি করুন</button>
+        <button class="btn-download" onclick="downloadQR()">📥 ডাউনলোড করুন</button>
+        <button class="btn-copy" onclick="copyToClipboard()">📋 কপি করুন</button>
+    </div>
+
+    <div class="success-message" id="successMessage">✅ সফলভাবে কপি করা হয়েছে!</div>
+
+    <div class="share-section">
+        <h3>📤 শেয়ার করুন:</h3>
+        <div class="share-buttons">
+            <button class="share-btn share-whatsapp" onclick="shareWhatsApp()">📱 WhatsApp</button>
+            <button class="share-btn share-facebook" onclick="shareFacebook()">📘 Facebook</button>
+            <button class="share-btn share-copy" onclick="shareCopyLink()">🔗 লিংক কপি করুন</button>
+            <button class="share-btn share-print" onclick="window.print()">🖨️ প্রিন্ট করুন</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const presetUrls = {
+        'homepage': 'https://arifkhan123292-max.github.io/bazar-live-app/',
+        'admin': 'https://arifkhan123292-max.github.io/bazar-live-app/admin.html'
+    };
+
+    const presetLabels = {
+        'homepage': '🏠 হোমপেজ',
+        'admin': '🔧 অ্যাডমিন'
+    };
+
+    function setPresetUrl(preset) {
+        const url = presetUrls[preset];
+        document.getElementById('urlInput').value = url;
+        document.getElementById('previewText').textContent = url;
+
+        // আপডেট করুন প্রি-সেট বাটন
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        generateQR();
+    }
+
+    function generateQR() {
+        const url = document.getElementById('urlInput').value;
+        const size = parseInt(document.getElementById('sizeInput').value);
+        const darkColor = document.getElementById('darkColor').value;
+        const lightColor = document.getElementById('lightColor').value;
+
+        if (!url) {
+            alert('❌ অনুগ্রহ করে URL লিখুন!');
+            return;
+        }
+
+        // URL preview আপডেট করুন
+        document.getElementById('previewText').textContent = url;
+
+        // পুরানো QR কোড সরান
+        document.getElementById('qrcode').innerHTML = '';
+
+        // নতুন QR কোড তৈরি করুন
+        const qr = new QRCode(document.getElementById('qrcode'), {
+            text: url,
+            width: size,
+            height: size,
+            colorDark: darkColor,
+            colorLight: lightColor,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }
+
+    function downloadQR() {
+        const canvas = document.querySelector('#qrcode canvas');
+        if (!canvas) {
+            alert('❌ প্রথমে QR কোড তৈরি করুন!');
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'khan-super-shop-qr-code.png';
+        link.click();
+    }
+
+    function copyToClipboard() {
+        const canvas = document.querySelector('#qrcode canvas');
+        if (!canvas) {
+            alert('❌ প্রথমে QR কোড তৈরি করুন!');
+            return;
+        }
+
+        canvas.toBlob(blob => {
+            navigator.clipboard.write([
+                new ClipboardItem({ 'image/png': blob })
+            ]).then(() => {
+                showSuccessMessage('✅ QR কোড ক্লিপবোর্ডে কপি হয়েছে!');
+            }).catch(() => {
+                alert('❌ কপি করতে ব্যর্থ হয়েছে');
+            });
+        });
+    }
+
+    function shareWhatsApp() {
+        const url = document.getElementById('urlInput').value;
+        const message = `🛍️ খান সুপার শপে স্বাগতম!\n\nএই QR কোড স্ক্যান করুন অথবা এই লিংক খুলুন:\n${url}\n\nসেরা মূল্যে সেরা পণ্য পান! 🎉`;
+        
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function shareFacebook() {
+        const url = document.getElementById('urlInput').value;
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=খান সুপার শপে স্বাগতম! সেরা মূল্যে সেরা পণ্য কিনুন।`;
+        window.open(facebookUrl, '_blank');
+    }
+
+    function shareCopyLink() {
+        const url = document.getElementById('urlInput').value;
+        navigator.clipboard.writeText(url).then(() => {
+            showSuccessMessage('✅ লিংক কপি হয়েছে!');
+        }).catch(() => {
+            alert('❌ কপি করতে ব্যর্থ হয়েছে');
+        });
+    }
+
+    function showSuccessMessage(message) {
+        const msg = document.getElementById('successMessage');
+        msg.textContent = message;
+        msg.classList.add('show');
+        setTimeout(() => {
+            msg.classList.remove('show');
+        }, 3000);
+    }
+
+    // পেজ লোড হলে ডিফল্ট QR তৈরি করুন
+    window.addEventListener('load', () => {
+        generateQR();
+    });
+
+    // URL পরিবর্তন হলে আপডেট করুন
+    document.getElementById('urlInput').addEventListener('change', () => {
+        document.querySelector('.preset-btn.active').classList.remove('active');
+        generateQR();
+    });
+
+    // সাইজ পরিবর্তন হলে আপডেট করুন
+    document.getElementById('sizeInput').addEventListener('change', generateQR);
+
+    // রং পরিবর্তন হলে আপডেট করুন
+    document.getElementById('darkColor').addEventListener('change', generateQR);
+    document.getElementById('lightColor').addEventListener('change', generateQR);
+</script>
+
+</body>
+</html>
