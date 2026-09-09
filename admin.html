@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অফার কন্ট্রোল প্যানেল - Admin</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f4f6f9;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 24px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .offer-price-view {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 15px;
+        }
+        .btn-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .btn-submit {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.3s, transform 0.1s;
+        }
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>অফার কন্ট্রোল প্যানেল (অ্যাডমিন মোড)</h2>
+    
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%; text-align: center;"><input type="checkbox" id="selectAll" onchange="toggleAllCheckboxes(this)"></th>
+                    <th style="width: 30%;">পণ্যের বিবরণ</th>
+                    <th style="width: 15%;">আসল দাম (৳)</th>
+                    <th style="width: 12%;">ছাড় (%)</th>
+                    <th style="width: 23%;">ছবির লিংক (URL)</th>
+                    <th style="width: 15%;">অফার মূল্য</th>
+                </tr>
+            </thead>
+            <tbody id="adminTableBody">
+                <!-- জাভাস্ক্রিপ্ট এর মাধ্যমে ডাটা এখানে লোড হবে -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn-submit" onclick="saveAllToLive()">লাইভ আপডেট সাবমিট করুন</button>
+    </div>
+</div>
+
+<script>
+    // ডিফল্ট প্রোডাক্ট লিস্ট
+    const defaultItems = [
+        { name: "Premium T-Shirt", price: 1200, discount: 20, image: "https://unsplash.com", offerPrice: 960, description: "" },
+        { name: "Casual Denim Jacket", price: 3500, discount: 15, image: "https://unsplash.com", offerPrice: 2975, description: "" },
+        { name: "Leather Wallet", price: 1500, discount: 10, image: "https://unsplash.com", offerPrice: 1350, description: "" },
+        { name: "Wireless Earbuds", price: 2500, discount: 25, image: "https://unsplash.com", offerPrice: 1875, description: "" },
+        { name: "Smart Watch Series 7", price: 4500, discount: 30, image: "https://unsplash.com", offerPrice: 3150, description: "" },
+        { name: "Sports Running Shoes", price: 3200, discount: 18, image: "https://unsplash.com", offerPrice: 2624, description: "" }
+    ];
+
+    // লোকাল স্টোরেজ থেকে ডাটা নেওয়া অথবা ডিফল্ট ডাটা সেট করা
+    let products = JSON.parse(localStorage.getItem('liveOfferProducts')) || defaultItems;
+
+    // টেবিল রেন্ডার করার ফাংশন
+    function renderAdminTable() {
+        const tbody = document.getElementById('adminTableBody');
+        tbody.innerHTML = '';
+
+        products.forEach((product, idx) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align: center;"><input type="checkbox" class="product-checkbox" data-index="${idx}"></td>
+                    <td>
+                        <input type="text" value="${product.name}" oninput="updateProductName(${idx}, this.value)" style="margin-bottom: 6px; font-weight: bold;" placeholder="পণ্যের নাম">
+                        <input type="text" value="${product.description || ''}" oninput="updateDescription(${idx}, this.value)" style="font-size: 12px; color: #555;" placeholder="পণ্যের সংক্ষিপ্ত বিবরণ বা ডেসক্রিপশন লিখুন...">
+                    </td>
+                    <td><input type="number" value="${product.price}" oninput="calculateOfferPrice(${idx}, this.value, 'price')"></td>
+                    <td><input type="number" value="${product.discount}" oninput="calculateOfferPrice(${idx}, this.value, 'discount')"></td>
+                    <td><input type="text" value="${product.image}" placeholder="https://..." oninput="updateImage(${idx}, this.value)"></td>
+                    <td><span class="offer-price-view" id="offer-view-${idx}">৳${product.offerPrice}</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    // লাইভ অফার প্রাইস ক্যালকুলেট করার ফাংশন
+    window.calculateOfferPrice = function(index, value, type) {
+        const val = parseFloat(value) || 0;
+        if (type === 'price') {
+            products[index].price = val;
+        } else if (type === 'discount') {
+            products[index].discount = val;
+        }
+
+        const price = products[index].price;
+        const discount = products[index].discount;
+        const offerPrice = Math.round(price - (price * (discount / 100)));
+        products[index].offerPrice = offerPrice;
+
+        document.getElementById(`offer-view-${index}`).innerText = `৳${offerPrice}`;
+    };
+
+    // নাম আপডেট করার ফাংশন
+    window.updateProductName = function(index, value) {
+        products[index].name = value;
+    };
+
+    // ডেসক্রিপশন আপডেট করার ফাংশন
+    window.updateDescription = function(index, value) {
+        products[index].description = value;
+    };
+
+    // ইমেজ লিংক আপডেট করার ফাংশন
+    window.updateImage = function(index, value) {
+        products[index].image = value;
+    };
+
+    // সবগুলো একসাথে সিলেক্ট বা আন-সিলেক্ট করার ফাংশন
+    window.toggleAllCheckboxes = function(mainCheckbox) {
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = mainCheckbox.checked;
+        });
+    };
+
+    // লোকাল স্টোরেজে সম্পূর্ণ ডাটা সেভ করার ফাংশন
+    window.saveAllToLive = function() {
+        localStorage.setItem('liveOfferProducts', JSON.stringify(products));
+        alert('🎉 অভিনন্দন! আপনার সমস্ত পরিবর্তন সফলভাবে লাইভ সাবমিট করা হয়েছে।');
+    };
+
+    window.onload = renderAdminTable;
+</script>
+
+</body>
+</html>
