@@ -3,190 +3,876 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>খান বাজার - অনলাইন মুদি দোকান</title>
+    <title>খান সুপার শপ - অনলাইন শপিং</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding: 15px; }
-        .header { background: #1e293b; color: white; text-align: center; padding: 25px; border-radius: 10px; margin-bottom: 20px; position: relative; }
-        .header h1 { font-size: 24px; margin-bottom: 10px; }
-        .header a { color: #38bdf8; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { font-size: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed #ddd; padding-bottom: 8px; }
-        
-        /* প্রোডাক্ট গ্রিড স্টাইল */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .product-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .product-card img { width: 100%; height: 80px; object-fit: cover; border-radius: 6px; background: #eee; }
-        .product-card h4 { font-size: 13px; margin: 8px 0 4px 0; height: 36px; overflow: hidden; }
-        .product-card .old-price { font-size: 11px; color: #94a3b8; text-decoration: line-through; }
-        .product-card .discount { font-size: 11px; color: #ef4444; font-weight: bold; margin-left: 4px; }
-        .product-card .offer-price { font-size: 14px; color: #10b981; font-weight: bold; margin: 4px 0; }
-        .product-card button { background: #10b981; color: white; border: none; width: 100%; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .product-card button:hover { background: #059669; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* কার্ট ও ফর্ম স্টাইল */
-        .cart-status { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; font-size: 14px; color: #64748b; margin-bottom: 15px; }
-        .cart-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-        .total-bill { background: #ecfdf5; border-left: 5px solid #10b981; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; color: #065f46; margin-bottom: 25px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 6px; color: #475569; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
-        .form-group input:focus { border-color: #3b82f6; }
-        .submit-btn { background: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .submit-btn:hover { background: #1d4ed8; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* হেডার */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+
+        .cart-badge {
+            background: #e74c3c;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .cart-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .cart-count {
+            background: white;
+            color: #e74c3c;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* হিরো সেকশন */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* পণ্য সেকশন */
+        .products-section {
+            padding: 60px 20px;
+            background-color: #fff;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* পণ্য কার্ড */
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+            background: #f9f9f9;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .stock-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .price-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .offer-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .product-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cart {
+            flex: 1;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-cart:hover {
+            background: #764ba2;
+        }
+
+        .btn-whatsapp-order {
+            flex: 1;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-whatsapp-order:hover {
+            background: #20BA5A;
+        }
+
+        /* কার্ট সাইডবার */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 999;
+            transition: right 0.3s;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .cart-item-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .cart-item-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .cart-total {
+            border-top: 2px solid #667eea;
+            padding-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .cart-total-final {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .cart-buttons {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20BA5A;
+        }
+
+        /* যোগাযোগ সেকশন */
+        .contact-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .contact-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-item h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .contact-item p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* ফুটার */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 15px;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .product-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>খান বাজার - অনলাইন মুদি দোকান</h1>
-        <a href="admin.html">⚙ অফার কন্ট্রোল প্যানেল যান</a>
+<!-- হেডার -->
+<header class="header">
+    <div class="header-container">
+        <div class="logo">
+            <h1>🛍️ খান সুপার শপ</h1>
+        </div>
+        <nav class="navbar">
+            <a href="#home">🏠 হোম</a>
+            <a href="#products">📦 পণ্য</a>
+            <a href="#contact">📞 যোগাযোগ</a>
+        </nav>
+        <div class="cart-badge" onclick="toggleCart()">
+            🛒 কার্ট
+            <span class="cart-count" id="cartCount">0</span>
+        </div>
     </div>
+</header>
 
+<!-- হিরো সেকশন -->
+<section class="hero" id="home">
     <div class="container">
-        <!-- ডাইনামিক অফার প্রোডাক্ট এখানে শো করবে -->
-        <h2>🛍️ আজকের বিশেষ অফারসমূহ</h2>
-        <div class="product-grid" id="customer-products">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে পণ্য লোড হবে -->
-        </div>
-
-        <h2>🛒 আপনার ব্যাগ</h2>
-        <div id="cart-container" class="cart-status">ব্যাগ খালি আছে</div>
-        
-        <div class="total-bill">
-            সর্বমোট অফার বিল: ৳ <span id="total-amount">0</span>
-        </div>
-
-        <h2>🚚 Delivery Information</h2>
-        <form id="order-form" onsubmit="placeOrder(event)">
-            <div class="form-group">
-                <label>আপনার নাম:</label>
-                <input type="text" id="cust-name" placeholder="আপনার নাম লিখুন" required>
-            </div>
-            <div class="form-group">
-                <label>মোবাইল নম্বর:</label>
-                <input type="tel" id="cust-phone" placeholder="017XXXXXXXX" required>
-            </div>
-            <div class="form-group">
-                <label>পূর্ণাঙ্গ ঠিকানা:</label>
-                <textarea id="cust-address" rows="3" placeholder="গ্রাম/রোড, থানা, জেলা লিখুন" required></textarea>
-            </div>
-            <div class="form-group">
-                <label>পেইমেন্ট মাধ্যম সিলেক্ট করুন:</label>
-                <select id="payment-method" required>
-                    <option value="ক্যাশ অন ডেলিভারি">ক্যাশ অন ডেলিভারি</option>
-                    <option value="বিকাশ">বিকাশ</option>
-                    <option value="নগদ">নগদ</option>
-                </select>
-            </div>
-            <button type="submit" class="submit-btn">🟢 হোয়াটসঅ্যাপে অফারটি লুফে নিন</button>
-        </form>
+        <h2>স্বাগতম খান সুপার শপে! 🎉</h2>
+        <p>সর্বোত্তম মানের পণ্য, সেরা দামে পাওয়া যাচ্ছে এখন!</p>
+        <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})">এখনই শপিং করুন</button>
     </div>
+</section>
 
-    <script>
-        // এডমিন প্যানেল থেকে ডেটা রিড করা
-        let savedData = localStorage.getItem('khanBazarLiveStorage');
-        let products = savedData ? JSON.parse(savedData) : [];
-        let cart = [];
+<!-- পণ্য সেকশন -->
+<section class="products-section" id="products">
+    <div class="container">
+        <div class="section-header">
+            <h2>আমাদের বিশেষ অফার</h2>
+            <p>সর্বোচ্চ ছাড়ে সেরা পণ্য কিনুন</p>
+        </div>
 
-        // কাস্টমার স্ক্রিনে লাইভ আইটেম প্রদর্শন
-        function loadCustomerPage() {
-            const grid = document.getElementById('customer-products');
-            grid.innerHTML = '';
-            
-            // শুধুমাত্র যেসব পণ্যের দাম ০ এর বেশি এবং এডমিন সেট করেছে সেগুলো দেখাবে
-            let activeProducts = products.filter(p => p.price > 0);
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterProducts('all')">���ব</button>
+            <button class="filter-btn" onclick="filterProducts('পোশাক')">👕 পোশাক</button>
+            <button class="filter-btn" onclick="filterProducts('আনুষাঙ্গিক')">⌚ আনুষাঙ্গিক</button>
+            <button class="filter-btn" onclick="filterProducts('ইলেকট্রনিক্স')">📱 ইলেকট্রনিক্স</button>
+        </div>
 
-            if(activeProducts.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; color:#94a3b8; text-align:center; padding:10px;">বর্তমানে কোনো লাইভ অফার নেই।</p>';
-                return;
-            }
+        <div class="products-grid" id="productsContainer">
+            <!-- পণ্যগুলো জাভাস্ক্রিপ্ট দিয়ে লোড হবে -->
+        </div>
+    </div>
+</section>
 
-            activeProducts.forEach(product => {
-                grid.innerHTML += `
-                    <div class="product-card">
-                        <img src="${product.image || 'https://placeholder.com'}" alt="${product.name}">
-                        <h4>${product.name}</h4>
-                        <div class="old-price">৳${product.price}</div>
-                        <div class="discount">${product.discount}% ছাড়</div>
-                        <div class="offer-price">৳${product.offerPrice}</div>
-                        <button onclick="addToBag(${product.id})">যোগ করুন</button>
+<!-- যোগাযোগ সেকশন -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <h2>আমাদের সাথে যোগাযোগ করুন</h2>
+        <div class="contact-info">
+            <div class="contact-item">
+                <h3>📱 WhatsApp</h3>
+                <p>+880 1749672230</p>
+                <a href="https://wa.me/8801749672230?text=আমি%20খান%20সুপার%20শপ%20থেকে%20অর্ডার%20করতে%20চাই" class="btn-whatsapp" target="_blank">WhatsApp এ যোগাযোগ করুন</a>
+            </div>
+            <div class="contact-item">
+                <h3>📧 ইমেইল</h3>
+                <p>info@khansupershop.com</p>
+            </div>
+            <div class="contact-item">
+                <h3>📍 ঠিকানা</h3>
+                <p>ঢাকা, বাংলাদেশ</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- কার্ট সাইডবার -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h2>🛒 আপনার কার্ট</h2>
+        <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <div class="empty-cart">
+            <p>আপনার কার্ট খালি আছে</p>
+        </div>
+    </div>
+    <div class="cart-total" id="cartTotal" style="display: none;">
+        <div class="cart-total-row">
+            <span>পণ্যের মূল্য:</span>
+            <span id="subtotal">৳0</span>
+        </div>
+        <div class="cart-total-row">
+            <span>ডেলিভারি চার্জ:</span>
+            <span>৳50</span>
+        </div>
+        <div class="cart-total-final">
+            <span>মোট:</span>
+            <span id="totalPrice">৳50</span>
+        </div>
+    </div>
+    <div class="cart-buttons" id="cartButtons" style="display: none;">
+        <a href="javascript:void(0)" class="btn-whatsapp" onclick="sendOrderToWhatsapp()">✅ WhatsApp এ অর্ডার পাঠান</a>
+        <button class="btn-primary" onclick="clearCart()">🗑️ কার্ট খালি করুন</button>
+    </div>
+</div>
+
+<!-- ফুটার -->
+<footer class="footer">
+    <p>&copy; 2024 খান সুপার শপ। সর্বাধিকার সংরক্ষিত। ✨</p>
+    <p>আমাদের সাথে কেনাকাটা করুন এবং সেরা দাম পান! 🎉</p>
+</footer>
+
+<script>
+    // পণ্যের ডাটা
+    let allProducts = [
+        {
+            id: 1,
+            name: "প্রিমিয়াম টি-শার্ট",
+            price: 1200,
+            discount: 20,
+            image: "https://via.placeholder.com/300?text=T-Shirt",
+            category: "পোশাক",
+            stock: 50,
+            description: "সাদা এবং রঙিন টি-শার্ট"
+        },
+        {
+            id: 2,
+            name: "ক্যাজুয়াল ডেনিম জ্যাকেট",
+            price: 3500,
+            discount: 15,
+            image: "https://via.placeholder.com/300?text=Jacket",
+            category: "পোশাক",
+            stock: 30,
+            description: "মানসম্পন্ন ডেনিম জ্যাকেট"
+        },
+        {
+            id: 3,
+            name: "লেদার ওয়ালেট",
+            price: 1500,
+            discount: 10,
+            image: "https://via.placeholder.com/300?text=Wallet",
+            category: "আনুষাঙ্গিক",
+            stock: 100,
+            description: "দীর্ঘস্থায়ী লেদার ওয়ালেট"
+        },
+        {
+            id: 4,
+            name: "ওয়্যারলেস ইয়ারবাডস",
+            price: 2500,
+            discount: 25,
+            image: "https://via.placeholder.com/300?text=Earbuds",
+            category: "ইলেকট্রনিক্স",
+            stock: 45,
+            description: "স্ফটিক স্বচ্ছ সাউন্ড"
+        },
+        {
+            id: 5,
+            name: "স্মার্ট ওয়াচ সিরিজ 7",
+            price: 4500,
+            discount: 30,
+            image: "https://via.placeholder.com/300?text=Smartwatch",
+            category: "ইলেকট্রনিক্স",
+            stock: 25,
+            description: "অত্যাধুনিক স্মার্ট ওয়াচ"
+        },
+        {
+            id: 6,
+            name: "স্পোর্টস রানিং শুজ",
+            price: 3200,
+            discount: 18,
+            image: "https://via.placeholder.com/300?text=Shoes",
+            category: "পোশাক",
+            stock: 60,
+            description: "আরামদায়ক এবং টেকসই"
+        }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('shopCart')) || [];
+    let currentFilter = 'all';
+
+    // পণ্য ডিসপ্লে করুন
+    function displayProducts(products) {
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = '';
+
+        products.forEach(product => {
+            const offerPrice = Math.round(product.price - (product.price * (product.discount / 100)));
+            const productHTML = `
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                        <div class="discount-badge">${product.discount}%</div>
+                        <div class="stock-badge">📦 ${product.stock} পিস</div>
                     </div>
-                `;
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="price-section">
+                            <span class="original-price">৳${product.price}</span>
+                            <span class="offer-price">৳${offerPrice}</span>
+                        </div>
+                        <div class="product-buttons">
+                            <button class="btn-cart" onclick="addToCart(${product.id})">🛒 কার্টে যোগ করুন</button>
+                            <a href="https://wa.me/8801749672230?text=আমি%20${encodeURIComponent(product.name)}%20অর্ডার%20করতে%20চাই।%20দাম:%20৳${offerPrice}" class="btn-whatsapp-order" target="_blank">📱 অর্ডার করুন</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += productHTML;
+        });
+    }
+
+    // পণ্য ফিল্টার করুন
+    function filterProducts(category) {
+        currentFilter = category;
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        let filtered = category === 'all' ? allProducts : allProducts.filter(p => p.category === category);
+        displayProducts(filtered);
+    }
+
+    // কার্টে যোগ করুন
+    function addToCart(productId) {
+        const product = allProducts.find(p => p.id === productId);
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: Math.round(product.price - (product.price * (product.discount / 100))),
+                quantity: 1,
+                image: product.image
             });
         }
 
-        // ব্যাগে পণ্য যোগ করার লজিক
-        function addToBag(id) {
-            let item = products.find(p => p.id === id);
-            if (!item) return;
+        saveCart();
+        updateCartDisplay();
+        alert(`✅ ${product.name} কার্টে যোগ করা হয়েছে!`);
+    }
 
-            let cartItem = cart.find(c => c.id === id);
-            if (cartItem) {
-                cartItem.qty += 1;
-            } else {
-                cart.push({ id: item.id, name: item.name, price: item.offerPrice, qty: 1 });
-            }
-            updateCartUI();
+    // কার্ট টগল করুন
+    function toggleCart() {
+        document.getElementById('cartSidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    }
+
+    // কার্ট আপডেট করুন
+    function updateCartDisplay() {
+        document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+        const cartItemsDiv = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartButtons = document.getElementById('cartButtons');
+
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<div class="empty-cart"><p>আপনার কার্ট খালি আছে</p></div>';
+            cartTotal.style.display = 'none';
+            cartButtons.style.display = 'none';
+            return;
         }
 
-        // কার্ট ইন্টারফেস আপডেট
-        function updateCartUI() {
-            const container = document.getElementById('cart-container');
-            const totalSpan = document.getElementById('total-amount');
-            
-            if(cart.length === 0) {
-                container.className = "cart-status";
-                container.innerHTML = "ব্যাগ খালি আছে";
-                totalSpan.innerText = "0";
-                return;
-            }
-
-            container.className = ""; 
-            container.innerHTML = "";
-            let total = 0;
-
-            cart.forEach(item => {
-                total += (item.price * item.qty);
-                container.innerHTML += `
-                    <div class="cart-item">
-                        <span>${item.name} (x${item.qty})</span>
-                        <strong>৳${item.price * item.qty}</strong>
+        let subtotal = 0;
+        cartItemsDiv.innerHTML = cart.map(item => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            return `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <h4>${item.name}</h4>
+                        <p class="cart-item-price">৳${item.price} × ${item.quantity} = ৳${itemTotal}</p>
                     </div>
-                `;
-            });
-            totalSpan.innerText = total;
+                    <button class="cart-item-remove" onclick="removeFromCart(${item.id})">মুছুন</button>
+                </div>
+            `;
+        }).join('');
+
+        const total = subtotal + 50;
+        document.getElementById('subtotal').textContent = '৳' + subtotal;
+        document.getElementById('totalPrice').textContent = '৳' + total;
+
+        cartTotal.style.display = 'block';
+        cartButtons.style.display = 'flex';
+    }
+
+    // কার্ট থেকে সরান
+    function removeFromCart(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        saveCart();
+        updateCartDisplay();
+    }
+
+    // কার্ট খালি করুন
+    function clearCart() {
+        if (confirm('সত্যি কার্ট খালি করতে চান?')) {
+            cart = [];
+            saveCart();
+            updateCartDisplay();
+            toggleCart();
+        }
+    }
+
+    // কার্ট সংরক্ষণ করুন
+    function saveCart() {
+        localStorage.setItem('shopCart', JSON.stringify(cart));
+    }
+
+    // WhatsApp এ অর্ডার পাঠান
+    function sendOrderToWhatsapp() {
+        if (cart.length === 0) {
+            alert('❌ কার্ট খালি আছে!');
+            return;
         }
 
-        // হোয়াটসঅ্যাপে অর্ডার সাবমিট করা
-        function placeOrder(e) {
-            e.preventDefault();
-            if(cart.length === 0) {
-                alert("আপনার ব্যাগ খালি! আগে পণ্য যোগ করুন।");
-                return;
-            }
+        let message = '🛒 *আমার অর্ডার:*\n\n';
+        let subtotal = 0;
 
-            let name = document.getElementById('cust-name').value;
-            let phone = document.getElementById('cust-phone').value;
-            let address = document.getElementById('cust-address').value;
-            let payment = document.getElementById('payment-method').value;
-            let totalBill = document.getElementById('total-amount').innerText;
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            message += `✅ ${item.name} - ৳${item.price} × ${item.quantity} = ৳${itemTotal}\n`;
+        });
 
-            let itemDetails = cart.map(c => `${c.name} - ${c.qty}টি - ৳${c.price * c.qty}`).join('\n');
-            
-            let message = `*নতুন অফার অর্ডার - খান বাজার*\n\n`;
-            message += `*কাস্টমার নাম:* ${name}\n`;
-            message += `*মোবাইল:* ${phone}\n`;
-            message += `*ঠিকানা:* ${address}\n`;
-            message += `*পেমেন্ট মেথড:* ${payment}\n\n`;
-            message += `*অর্ডার করা আইটেমসমূহ:*\n${itemDetails}\n\n`;
-            message += `*সর্বমোট বিল:* ৳${totalBill}`;
+        const total = subtotal + 50;
+        message += `\n📊 *মোট (ডেলিভারি সহ): ৳${total}*\n`;
+        message += `\nঅনুগ্রহ করে এই অর্ডার নিশ্চিত করুন। ধন্যবাদ! 🙏`;
 
-            let whatsappUrl = `https://wa.me{encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
+        const whatsappUrl = `https://wa.me/8801749672230?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
 
-        window.onload = loadCustomerPage;
-    </script>
+    // পেজ লোড হলে
+    window.addEventListener('load', () => {
+        displayProducts(allProducts);
+        updateCartDisplay();
+    });
+</script>
+
 </body>
 </html>
