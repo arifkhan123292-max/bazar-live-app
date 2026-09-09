@@ -292,6 +292,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            font-size: 13px;
         }
 
         .btn-cart:hover {
@@ -313,6 +314,7 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
+            font-size: 13px;
         }
 
         .btn-whatsapp-order:hover {
@@ -357,7 +359,7 @@
 
         .cart-items {
             margin-bottom: 20px;
-            max-height: 50vh;
+            max-height: 35vh;
             overflow-y: auto;
         }
 
@@ -378,12 +380,13 @@
         .cart-item-info h4 {
             margin-bottom: 5px;
             color: #333;
+            font-size: 13px;
         }
 
         .cart-item-price {
             color: #e74c3c;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .cart-item-remove {
@@ -393,7 +396,7 @@
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .cart-total {
@@ -406,15 +409,72 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .cart-total-final {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #667eea;
+        }
+
+        /* পেমেন্ট মেথড */
+        .payment-methods {
+            margin-bottom: 20px;
+        }
+
+        .payment-methods h4 {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .payment-option {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f9f9f9;
+        }
+
+        .payment-option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .payment-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .payment-icon {
+            font-size: 24px;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-info label {
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .payment-info p {
+            font-size: 11px;
+            color: #666;
         }
 
         .cart-buttons {
@@ -529,6 +589,11 @@
             .product-buttons {
                 flex-direction: column;
             }
+
+            .btn-cart, .btn-whatsapp-order {
+                font-size: 12px;
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -570,7 +635,7 @@
         </div>
 
         <div class="filter-buttons">
-            <button class="filter-btn active" onclick="filterProducts('all')">���ব</button>
+            <button class="filter-btn active" onclick="filterProducts('all')">সব</button>
             <button class="filter-btn" onclick="filterProducts('পোশাক')">👕 পোশাক</button>
             <button class="filter-btn" onclick="filterProducts('আনুষাঙ্গিক')">⌚ আনুষাঙ্গিক</button>
             <button class="filter-btn" onclick="filterProducts('ইলেকট্রনিক্স')">📱 ইলেকট্রনিক্স</button>
@@ -630,6 +695,48 @@
             <span id="totalPrice">৳50</span>
         </div>
     </div>
+
+    <!-- পেমেন্ট মেথড -->
+    <div class="payment-methods" id="paymentMethods" style="display: none;">
+        <h4>💳 পেমেন্ট পদ্ধতি বেছে নিন:</h4>
+        
+        <div class="payment-option" onclick="selectPayment('bkash')">
+            <div class="payment-icon">🏦</div>
+            <div class="payment-info">
+                <label>bKash</label>
+                <p>মোবাইল ব্যাংকিং</p>
+            </div>
+            <input type="radio" name="payment" value="bkash" style="cursor: pointer;">
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('nagad')">
+            <div class="payment-icon">💰</div>
+            <div class="payment-info">
+                <label>নগদ</label>
+                <p>নগদ রূপান্তর</p>
+            </div>
+            <input type="radio" name="payment" value="nagad" style="cursor: pointer;">
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('rocket')">
+            <div class="payment-icon">🚀</div>
+            <div class="payment-info">
+                <label>Rocket</label>
+                <p>ডাচ বাংলা ব্যাংক</p>
+            </div>
+            <input type="radio" name="payment" value="rocket" style="cursor: pointer;">
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('cod')">
+            <div class="payment-icon">📦</div>
+            <div class="payment-info">
+                <label>ক্যাশ অন ডেলিভারি (COD)</label>
+                <p>ডেলিভারির সময় পেমেন্ট</p>
+            </div>
+            <input type="radio" name="payment" value="cod" style="cursor: pointer;">
+        </div>
+    </div>
+
     <div class="cart-buttons" id="cartButtons" style="display: none;">
         <a href="javascript:void(0)" class="btn-whatsapp" onclick="sendOrderToWhatsapp()">✅ WhatsApp এ অর্ডার পাঠান</a>
         <button class="btn-primary" onclick="clearCart()">🗑️ কার্ট খালি করুন</button>
@@ -709,6 +816,7 @@
 
     let cart = JSON.parse(localStorage.getItem('shopCart')) || [];
     let currentFilter = 'all';
+    let selectedPayment = 'cod';
 
     // পণ্য ডিসপ্লে করুন
     function displayProducts(products) {
@@ -732,8 +840,8 @@
                             <span class="offer-price">৳${offerPrice}</span>
                         </div>
                         <div class="product-buttons">
-                            <button class="btn-cart" onclick="addToCart(${product.id})">🛒 কার্টে যোগ করুন</button>
-                            <a href="https://wa.me/8801749672230?text=আমি%20${encodeURIComponent(product.name)}%20অর্ডার%20করতে%20চাই।%20দাম:%20৳${offerPrice}" class="btn-whatsapp-order" target="_blank">📱 অর্ডার করুন</a>
+                            <button class="btn-cart" onclick="addToCart(${product.id})">🛒 কার্টে যোগ</button>
+                            <a href="https://wa.me/8801749672230?text=আমি%20${encodeURIComponent(product.name)}%20অর্ডার%20করতে%20চাই।%20দাম:%20৳${offerPrice}" class="btn-whatsapp-order" target="_blank">📱 সরাসরি অর্ডার</a>
                         </div>
                     </div>
                 </div>
@@ -783,6 +891,18 @@
         document.getElementById('overlay').classList.toggle('active');
     }
 
+    // পেমেন্ট মেথড সিলেক্ট করুন
+    function selectPayment(method) {
+        selectedPayment = method;
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        event.currentTarget.classList.add('selected');
+        
+        const radio = event.currentTarget.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+    }
+
     // কার্ট আপডেট করুন
     function updateCartDisplay() {
         document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -790,11 +910,13 @@
         const cartItemsDiv = document.getElementById('cartItems');
         const cartTotal = document.getElementById('cartTotal');
         const cartButtons = document.getElementById('cartButtons');
+        const paymentMethods = document.getElementById('paymentMethods');
 
         if (cart.length === 0) {
             cartItemsDiv.innerHTML = '<div class="empty-cart"><p>আপনার কার্ট খালি আছে</p></div>';
             cartTotal.style.display = 'none';
             cartButtons.style.display = 'none';
+            paymentMethods.style.display = 'none';
             return;
         }
 
@@ -818,6 +940,7 @@
         document.getElementById('totalPrice').textContent = '৳' + total;
 
         cartTotal.style.display = 'block';
+        paymentMethods.style.display = 'block';
         cartButtons.style.display = 'flex';
     }
 
@@ -860,8 +983,18 @@
         });
 
         const total = subtotal + 50;
-        message += `\n📊 *মোট (ডেলিভারি সহ): ৳${total}*\n`;
-        message += `\nঅনুগ্রহ করে এই অর্ডার নিশ্চিত করুন। ধন্যবাদ! 🙏`;
+        message += `\n📊 *মোট (ডেলিভারি সহ): ৳${total}*`;
+        
+        // পেমেন্ট মেথড যোগ করুন
+        const paymentMethods = {
+            'bkash': '🏦 bKash',
+            'nagad': '💰 নগদ',
+            'rocket': '🚀 Rocket',
+            'cod': '📦 ক্যাশ অন ডেলিভারি (COD)'
+        };
+
+        message += `\n💳 *পেমেন্ট পদ্ধতি:* ${paymentMethods[selectedPayment]}`;
+        message += `\n\nঅনুগ্রহ করে এই অর্ডার নিশ্চিত করুন। ধন্যবাদ! 🙏`;
 
         const whatsappUrl = `https://wa.me/8801749672230?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
