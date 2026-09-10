@@ -999,14 +999,13 @@
         const whatsappUrl = `https://wa.me/8801749672230?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     }
-
+let allProducts = JSON.parse(localStorage.getItem('adminProducts')) || [];
     // পেজ লোড হলে
     window.addEventListener('load', () => {
         displayProducts(allProducts);
         updateCartDisplay();
     });
 </script>
-<script src="js/script.js"></script>
 
 </body>
 </html>
