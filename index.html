@@ -978,7 +978,7 @@
         category: "পোশাক",
         stock: 55,
         description: "স্ট্রেচেবল ও আরামদায়ক গ্যাবার্ডিন ফেব্রিক্স।"
-    }
+    },
     ];
 
     let cart = JSON.parse(localStorage.getItem('shopCart')) || [];
@@ -986,44 +986,45 @@
     let selectedPayment = 'cod';
 
     // পণ্য ডিসপ্লে করুন
-    function displayProducts(products) {
-        const container = document.getElementById('productsContainer');
-        container.innerHTML = '';
+    .function displayProducts(products) {
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
 
-        products.forEach(product => {
-            const offerPrice = Math.round(product.price - (product.price * (product.discount / 100)));
-            const productHTML = `
-                <div class="product-card">
-                    <div class="product-image">
-                        .<div class="product-image">
-    <!-- প্রধান ছবি -->
-    <img src="${product.image}" alt="${product.name}" class="main-product-img">
-    
-    <!-- বাকি ২টা ছোট ছবি -->
-    <div class="product-thumbs" style="display: flex; gap: 5px; margin-top: 5px; justify-content: center;">
-        ${product.image2 ? <img src="${product.image2}" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;"> : ''}
-        ${product.image3 ? <img src="${product.image3}" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;"> : ''}
-    </div>
-    
-    <div class="discount-badge">${product.discount}%</div>
-    <div class="stock-badge">📦 ${product.stock} পিস</div>
-</div>                   <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="price-section">
-                            <span class="original-price">৳${product.price}</span>
-                            <span class="offer-price">৳${offerPrice}</span>
-                        </div>
-                        <div class="product-buttons">
-                            <button class="btn-cart" onclick="addToCart(${product.id})">🛒 কার্টে যোগ</button>
-                            <a href="https://wa.me/8801749672230?text=আমি%20${encodeURIComponent(product.name)}%20অর্ডার%20করতে%20চাই।%20দাম:%20৳${offerPrice}" class="btn-whatsapp-order" target="_blank">📱 সরাসরি অর্ডার</a>
-                        </div>
+    products.forEach(product => {
+        const offerPrice = Math.round(product.price - (product.price * product.discount / 100));
+        const productHTML = `
+            <div class="product-card">
+                <div class="product-image">
+                    <!-- প্রধান ছবি -->
+                    <img src="${product.image}" alt="${product.name}" class="main-product-img">
+                    
+                    <!-- বাকি ২টা ছোট ছবি -->
+                    <div class="product-thumbs" style="display: flex; gap: 5px; margin-top: 5px; justify-content: center;">
+                        ${product.image2 ? <img src="${product.image2}" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;"> : ''}
+                        ${product.image3 ? <img src="${product.image3}" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px;"> : ''}
+                    </div>
+                    
+                    <div class="discount-badge">${product.discount}%</div>
+                    <div class="stock-badge">📦 ${product.stock} পিস</div>
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p class="product-description">${product.description}</p>
+                    <div class="price-section">
+                        <span class="original-price">৳${product.price}</span>
+                        <span class="offer-price">৳${offerPrice}</span>
+                    </div>
+                    
+                    <div class="product-buttons">
+                        <button class="btn-cart" onclick="addToCart(${product.id})">🛒 কার্টে যোগ</button>
+                        <a href="https://wa.meি%20${encodeURIComponent(product.name)}%20অর্ডার%20করতে%20চাই" class="btn-whatsapp" target="_blank">WhatsApp এ যোগাযোগ করুন</a>
                     </div>
                 </div>
-            `;
-            container.innerHTML += productHTML;
-        });
-    }
+            </div>
+        `;
+        container.innerHTML += productHTML;
+    });
+}            
 
     // পণ্য ফিল্টার করুন
     function filterProducts(category) {
