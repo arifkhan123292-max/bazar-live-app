@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খান সুপার শপ - অ্যাডমিন ড্যাশবোর্ড</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #f1f5f9; color: #334155; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: #1e293b; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-title { font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .header-title i { color: #2dd4bf; }
+        .live-btn { background: #14b8a6; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; }
+        
+        .main-container { max-width: 1200px; width: 100%; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr; gap: 30px; flex-grow: 1; }
+        @media(min-width: 900px) { .main-container { grid-template-columns: 1fr 2fr; } }
+        
+        .card { background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); height: fit-content; }
+        .card-title { font-size: 18px; font-weight: bold; color: #1e293b; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
+        .card-title i { color: #14b8a6; margin-right: 5px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: #14b8a6; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .submit-btn { width: 100%; background: #0d9488; color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
+        
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f8fafc; color: #64748b; font-size: 12px; font-weight: bold; padding: 12px; border-bottom: 2px solid #e2e8f0; }
+        td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        .p-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .cat-tag { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .delete-btn { background: #fef2f2; color: #ef4444; border: none; padding: 8px; border-radius: 8px; cursor: pointer; }
+        .delete-btn:hover { background: #fee2e2; }
+        .alert-empty { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-title">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>অ্যাডমিন কন্ট্রোল প্যানেল</span>
+        </div>
+        <a href="index.html" class="live-btn"><i class="fa-solid fa-eye"></i> লাইভ শপ দেখুন</a>
+    </header>
+
+    <div class="main-container">
+        <!-- Form Section -->
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-circle-plus"></i> নতুন পণ্য যুক্ত করুন</h2>
+            <form id="product-form">
+                <div class="form-group">
+                    <label>পণ্যের নাম</label>
+                    <input type="text" id="p-name" required placeholder="যেমন: ইলিশ মাছ (বড়)">
+                </div>
+                <div class="form-group">
+                    <label>পরিমাণ / ওজন</label>
+                    <input type="text" id="p-weight" required placeholder="যেমন: ১ কেজি">
+                </div>
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>আসল দাম (৳)</label>
+                        <input type="number" id="p-old-price" required placeholder="১২০০">
+                    </div>
+                    <div class="form-group">
+                        <label>অফার দাম (৳)</label>
+                        <input type="number" id="p-new-price" required placeholder="৯৫০">
+                    </div>
+                </div>
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>ডিসকাউন্ট (%)</label>
+                        <input type="number" id="p-discount" placeholder="২০">
+                    </div>
+                    <div class="form-group">
+                        <label>ক্যাটাগরি</label>
+                        <select id="p-category">
+                            <option value="কাঁচা বাজার">কাঁচা বাজার</option>
+                            <option value="পোশাক">পোশাক</option>
+                            <option value="আনুষঙ্গিক">আনুষঙ্গিক</option>
+                            <option value="ইলেকট্রনিক্স">ইলেকট্রনিক্স</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>ছবির লিংক (URL)</label>
+                    <input type="text" id="p-image" required placeholder="https://unsplash.com">
+                </div>
+                <button type="submit" class="submit-btn">পণ্য আপলোড করুন</button>
+            </form>
+        </div>
+
+        <!-- Inventory List Section -->
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-boxes-stacked"></i> বর্তমান স্টক ও পণ্য তালিকা</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ছবি</th>
+                            <th>নাম</th>
+                            <th>ক্যাটাগরি</th>
+                            <th>দাম (৳)</th>
+                            <th style="text-align: center;">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-product-list">
+                        <!-- আইটেমগুলো জাভাস্ক্রিপ্ট দিয়ে জেনারেট হবে -->
+                    </tbody>
+                </table>
+                <div id="no-product-alert" class="alert-empty hidden">কোনো পণ্য পাওয়া যায়নি। নতুন পণ্য যোগ করুন!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core App JS -->
+    <script src="app.js"></script>
+</body>
+</html>
