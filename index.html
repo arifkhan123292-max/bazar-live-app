@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খান সুপার শপ - কাস্টমার ভিউ</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f3f4f6; color: #1f2937; }
+        
+        /* Navbar */
+        nav { background: #6d28d9; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .logo { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .logo i { color: #facc15; }
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links a { color: white; text-decoration: none; font-size: 14px; }
+        .nav-links a:hover { color: #facc15; }
+        .cart-btn { background: #ef4444; color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; border: none; }
+        .cart-count { background: white; color: #ef4444; border-radius: 50%; padding: 2px 6px; margin-left: 4px; }
+        
+        /* Hero Section */
+        .hero { background: linear-gradient(to bottom, #6d28d9, #4338ca); color: white; text-align: center; padding: 60px 20px; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+        .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
+        .hero p { color: #ddd6fe; font-size: 16px; margin-bottom: 25px; }
+        .hero button { background: white; color: #4338ca; font-weight: bold; padding: 12px 30px; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); transition: 0.3s; }
+        .hero button:hover { background: #facc15; color: #1e1b4b; }
+
+        /* Products Section */
+        .products-section { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .section-title { text-align: center; color: #1e1b4b; font-size: 28px; margin-bottom: 5px; }
+        .section-subtitle { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 30px; }
+        
+        /* Filters */
+        .filters { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        .filter-btn { background: white; border: 2px solid #818cf8; padding: 6px 18px; border-radius: 50px; font-size: 13px; color: #4338ca; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: #4338ca; color: white; border-color: #4338ca; }
+        .filter-btn:hover:not(.active) { background: #f3f4f6; }
+
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 16px; border: 1px solid #e5e7eb; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .discount-badge { position: absolute; top: 12px; left: 12px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; z-index: 5; }
+        .img-container { height: 160px; background: #f9fafb; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .img-container img { max-height: 100%; max-width: 100%; object-fit: cover; border-radius: 8px; }
+        .card-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .p-title { font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 2px; }
+        .p-weight { font-size: 12px; color: #9ca3af; margin-bottom: 12px; }
+        .price-box { display: flex; align-items: baseline; gap: 8px; margin-bottom: 15px; }
+        .new-price { color: #4f46e5; font-size: 18px; font-weight: 800; }
+        .old-price { color: #9ca3af; text-decoration: line-through; font-size: 12px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .buy-btn { background: #10b981; color: white; border: none; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .details-btn { background: #f3f4f6; color: #4b5563; border: none; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 500; cursor: pointer; }
+
+        /* Contact Section */
+        .contact-section { background: #1e293b; padding: 50px 20px; border-top: 1px solid #e5e7eb; color: white; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .contact-card { padding: 25px; border-radius: 12px; border: 1px solid #475569; background: rgba(255,255,255,0.05); text-align: center; }
+        .contact-card i { font-size: 30px; margin-bottom: 10px; color: #38bdf8; }
+        .contact-card h3 { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .contact-card p { font-size: 13px; margin-bottom: 15px; color: #cbd5e1; }
+        .contact-link { display: inline-block; background: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; border: none; }
+        
+        /* Footer */
+        footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 25px; font-size: 12px; border-top: 1px solid #334155; }
+        footer a { color: #818cf8; text-decoration: none; margin-top: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-shop"></i>
+            <span>খান সুপার শপ</span>
+        </div>
+        <div class="nav-links">
+            <a href="#"><i class="fa-solid fa-house"></i> হোম</a>
+            <a href="#"><i class="fa-solid fa-box"></i> পণ্য</a>
+            <a href="#"><i class="fa-solid fa-phone"></i> যোগাযোগ</a>
+        </div>
+        <button class="cart-btn">
+            <i class="fa-solid fa-cart-shopping"></i> কার্ট <span class="cart-count">০</span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Welcome to Khan Super Shop! 🎉</h1>
+        <p>The best quality products are available at the best price now!</p>
+        <button>Shop Now</button>
+    </div>
+
+    <!-- Products Section -->
+    <div class="products-section">
+        <h2 class="section-title">Our Special Offer</h2>
+        <p class="section-subtitle">সর্বোচ্চ ছাড়ে সেরা পণ্য কিনুন</p>
+
+        <!-- Category Filters -->
+        <div class="filters">
+            <button onclick="filterProducts('সব')" class="filter-btn active">All</button>
+            <button onclick="filterProducts('কাঁচা বাজার')" class="filter-btn">Grocery</button>
+            <button onclick="filterProducts('পোশাক')" class="filter-btn">Clothing</button>
+            <button onclick="filterProducts('ইলেকট্রনিক্স')" class="filter-btn">Electronics</button>
+        </div>
+
+        <!-- Product Grid Dynamic -->
+        <div id="product-container" class="product-grid">
+            <!-- প্রোডাক্টগুলো জাভাস্ক্রিপ্ট দিয়ে এখানে লোড হবে -->
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 22px;">Get in touch with us</h2>
+        <div class="contact-grid">
+            <!-- WhatsApp -->
+            <div class="contact-card">
+                <i class="fa-brands fa-whatsapp" style="color: #10b981;"></i>
+                <h3>WhatsApp</h3>
+                <p>+880 1749672230</p>
+                <a href="https://wa.me" target="_blank" class="contact-link">Get in touch with WhatsApp</a>
+            </div>
+            <!-- Email -->
+            <div class="contact-card">
+                <i class="fa-solid fa-envelope" style="color: #0ea5e9;"></i>
+                <h3>Email</h3>
+                <p>arifkhan123292@gmail.com</p>
+            </div>
+            <!-- Address -->
+            <div class="contact-card">
+                <i class="fa-solid fa-location-dot" style="color: #a855f7;"></i>
+                <h3>Address</h3>
+                <p>৫, আমতলা রোড, ঝালকাঠি</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Khan Super Shop. Most of them are saved. ✨</p>
+        <p>Buy with us and get the best price! 🎉</p>
+        <a href="admin.html"><i class="fa-solid fa-user-gear"></i> অ্যাডমিন প্যানেল প্রবেশ করুন</a>
+    </footer>
+
+    <!-- Core App JS -->
+    <script src="app.js"></script>
+    <script>
+        // ফিল্টার বাটন অ্যাক্টিভ ক্লাস পরিবর্তনের লজিক
+        const btns = document.querySelectorAll('.filter-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                btns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
